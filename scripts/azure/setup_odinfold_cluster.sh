@@ -10,11 +10,16 @@ echo "=========================================="
 # Configuration
 RESOURCE_GROUP="${AZURE_RESOURCE_GROUP:-odinfold-rg}"
 CLUSTER_NAME="${AZURE_CLUSTER_NAME:-odinfold-cluster}"
-LOCATION="${AZURE_LOCATION:-eastus}"
+LOCATION="${AZURE_LOCATION:-eastus}"  # eastus has best GPU availability
 SYSTEM_NODE_COUNT="${SYSTEM_NODE_COUNT:-1}"
 GPU_NODE_COUNT="${GPU_NODE_COUNT:-0}"  # Start with 0 GPU nodes to save cost
 SYSTEM_VM_SIZE="${SYSTEM_VM_SIZE:-Standard_D2s_v3}"  # Cheap system nodes
-GPU_VM_SIZE="${GPU_VM_SIZE:-Standard_NC6s_v3}"  # V100 GPU nodes
+GPU_VM_SIZE="${GPU_VM_SIZE:-Standard_NC24ads_A100_v4}"  # A100 GPU (80GB VRAM) ⚡ BEAST MODE
+# Azure A100 GPU options:
+# Standard_NC24ads_A100_v4  - 1x A100 (80GB VRAM) ~$3.67/hr ⭐ RECOMMENDED
+# Standard_ND96amsr_A100_v4 - 8x A100 (40GB each) ~$27.20/hr (320GB total)
+# Standard_ND96asr_v4       - 8x A100 (80GB each) ~$32.77/hr (640GB total!) 🔥
+# Standard_NC8as_T4_v3      - 1x T4 (16GB VRAM) ~$0.526/hr (budget option)
 MAX_PODS="${MAX_PODS:-30}"
 
 echo "Configuration:"
@@ -94,7 +99,7 @@ else
         --max-count 3 \
         --node-osdisk-size 100 \
         --node-taints nvidia.com/gpu=true:NoSchedule \
-        --labels pool=gpu,accelerator=nvidia-tesla-v100
+        --labels pool=gpu,accelerator=nvidia-tesla-a100
 
     echo "✅ Added GPU node pool"
 fi

@@ -80,8 +80,8 @@ jobs:
         
         # Check GPU nodes specifically
         echo "🎯 GPU Nodes:"
-        kubectl get nodes -l accelerator=nvidia-tesla-v100 -o wide || echo "No V100 nodes found"
         kubectl get nodes -l accelerator=nvidia-tesla-a100 -o wide || echo "No A100 nodes found"
+        kubectl get nodes -l accelerator=nvidia-tesla-v100 -o wide || echo "No V100 nodes found"
         kubectl get nodes -l node.kubernetes.io/instance-type | grep -i gpu || echo "No GPU instance types found"
     
     - name: Create OdinFold Namespace
@@ -114,7 +114,7 @@ jobs:
             spec:
               restartPolicy: Never
               nodeSelector:
-                accelerator: nvidia-tesla-v100  # or nvidia-tesla-a100
+                accelerator: nvidia-tesla-a100  # A100 GPU nodes
               tolerations:
               - key: nvidia.com/gpu
                 operator: Exists

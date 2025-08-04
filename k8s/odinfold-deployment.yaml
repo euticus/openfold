@@ -142,7 +142,7 @@ spec:
         emptyDir:
           sizeLimit: 50Gi
       nodeSelector:
-        accelerator: nvidia-tesla-v100
+        accelerator: nvidia-tesla-a100
       tolerations:
       - key: nvidia.com/gpu
         operator: Exists
@@ -238,7 +238,7 @@ spec:
               echo "📊 Benchmark completed successfully!"
               cat /tmp/benchmark_results/ci_report.md
           nodeSelector:
-            accelerator: nvidia-tesla-v100
+            accelerator: nvidia-tesla-a100
           tolerations:
           - key: nvidia.com/gpu
             operator: Exists
