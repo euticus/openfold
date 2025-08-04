@@ -1,0 +1,337 @@
+name: OpenFold++ GPU Benchmark CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      benchmark_type:
+        description: 'Benchmark type to run'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+        - quick
+        - full
+        - casp-only
+        - performance-only
+
+env:
+  PYTHON_VERSION: "3.9"
+  CUDA_VERSION: "11.8"
+  PYTORCH_VERSION: "2.0.1"
+
+jobs:
+  gpu-benchmark:
+    name: GPU Performance Benchmark
+    runs-on: [self-hosted, gpu, A100]  # Requires self-hosted runner with A100
+    timeout-minutes: 60
+    
+    strategy:
+      matrix:
+        benchmark_config:
+          - name: "production"
+            tm_threshold: 0.66
+            runtime_threshold: 5.5
+            memory_threshold: 8.0
+          - name: "research"
+            tm_threshold: 0.70
+            runtime_threshold: 4.0
+            memory_threshold: 6.0
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+        submodules: recursive
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    
+    - name: Check GPU availability
+      run: |
+        nvidia-smi
+        python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'GPU count: {torch.cuda.device_count()}'); print(f'GPU name: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"None\"}')"
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.cache/torch
+          ~/.cache/huggingface
+        key: ${{ runner.os }}-gpu-deps-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-gpu-deps-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install torch==${{ env.PYTORCH_VERSION }} torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+        pip install -r requirements.txt
+        pip install -e .
+    
+    - name: Download benchmark data
+      run: |
+        mkdir -p data/casp
+        # Download CASP test sequences (mock for now)
+        python -c "
+        import json
+        casp_data = {
+          'T1024': 'MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLGYNIVATPRGYVLAGG',
+          'T1030': 'MKWVTFISLLFLFSSAYSRGVFRRDAHKSEVAHRFKDLGEENFKALVLIAFAQYLQQCPFEDHV',
+          'T1031': 'MNIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAIGRNTNGVITKDEAE'
+        }
+        with open('data/casp/test_sequences.json', 'w') as f:
+          json.dump(casp_data, f)
+        "
+    
+    - name: Warm up GPU
+      run: |
+        python -c "
+        import torch
+        if torch.cuda.is_available():
+          x = torch.randn(1000, 1000, device='cuda')
+          y = torch.mm(x, x)
+          print(f'GPU warmup complete: {y.shape}')
+        "
+    
+    - name: Run Quick Benchmark
+      if: github.event.inputs.benchmark_type == 'quick' || github.event_name != 'workflow_dispatch'
+      run: |
+        python openfoldpp/scripts/evaluation/gpu_ci_benchmark.py \
+          --config ${{ matrix.benchmark_config.name }} \
+          --tm-threshold ${{ matrix.benchmark_config.tm_threshold }} \
+          --runtime-threshold ${{ matrix.benchmark_config.runtime_threshold }} \
+          --memory-threshold ${{ matrix.benchmark_config.memory_threshold }} \
+          --output-dir reports/ci_benchmark \
+          --quick
+    
+    - name: Run Full CASP Benchmark
+      if: github.event.inputs.benchmark_type == 'full' || github.event.inputs.benchmark_type == 'casp-only'
+      run: |
+        python openfoldpp/scripts/evaluation/gpu_ci_benchmark.py \
+          --config ${{ matrix.benchmark_config.name }} \
+          --tm-threshold ${{ matrix.benchmark_config.tm_threshold }} \
+          --runtime-threshold ${{ matrix.benchmark_config.runtime_threshold }} \
+          --memory-threshold ${{ matrix.benchmark_config.memory_threshold }} \
+          --output-dir reports/ci_benchmark \
+          --casp-benchmark
+    
+    - name: Run Performance Benchmark
+      if: github.event.inputs.benchmark_type == 'full' || github.event.inputs.benchmark_type == 'performance-only'
+      run: |
+        python openfoldpp/scripts/evaluation/gpu_ci_benchmark.py \
+          --config ${{ matrix.benchmark_config.name }} \
+          --tm-threshold ${{ matrix.benchmark_config.tm_threshold }} \
+          --runtime-threshold ${{ matrix.benchmark_config.runtime_threshold }} \
+          --memory-threshold ${{ matrix.benchmark_config.memory_threshold }} \
+          --output-dir reports/ci_benchmark \
+          --performance-benchmark
+    
+    - name: Check benchmark results
+      id: check_results
+      run: |
+        python -c "
+        import json
+        import sys
+        
+        try:
+          with open('reports/ci_benchmark/ci_results.json', 'r') as f:
+            results = json.load(f)
+          
+          # Check if all targets met
+          tm_pass = results['casp_benchmark']['meets_tm_target']
+          runtime_pass = results['performance_benchmark']['meets_runtime_target']
+          memory_pass = results['performance_benchmark']['meets_memory_target']
+          
+          overall_pass = tm_pass and runtime_pass and memory_pass
+          
+          print(f'TM-score target: {tm_pass}')
+          print(f'Runtime target: {runtime_pass}')
+          print(f'Memory target: {memory_pass}')
+          print(f'Overall pass: {overall_pass}')
+          
+          # Set output for next step
+          print(f'::set-output name=benchmark_pass::{str(overall_pass).lower()}')
+          print(f'::set-output name=tm_score::{results[\"casp_benchmark\"][\"mean_tm_score\"]:.3f}')
+          print(f'::set-output name=runtime::{results[\"performance_benchmark\"][\"mean_runtime_s\"]:.2f}')
+          print(f'::set-output name=memory::{results[\"performance_benchmark\"][\"peak_memory_gb\"]:.1f}')
+          
+          if not overall_pass:
+            sys.exit(1)
+            
+        except Exception as e:
+          print(f'Error checking results: {e}')
+          sys.exit(1)
+        "
+    
+    - name: Upload benchmark artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: benchmark-results-${{ matrix.benchmark_config.name }}
+        path: |
+          reports/ci_benchmark/
+          *.log
+        retention-days: 30
+    
+    - name: Generate benchmark badge
+      if: github.ref == 'refs/heads/main'
+      run: |
+        python -c "
+        import json
+        
+        # Create badge data
+        badge_data = {
+          'schemaVersion': 1,
+          'label': 'OpenFold++ Benchmark',
+          'message': '${{ steps.check_results.outputs.tm_score }} TM | ${{ steps.check_results.outputs.runtime }}s | ${{ steps.check_results.outputs.memory }}GB',
+          'color': '${{ steps.check_results.outputs.benchmark_pass == 'true' && 'brightgreen' || 'red' }}'
+        }
+        
+        with open('benchmark_badge.json', 'w') as f:
+          json.dump(badge_data, f)
+        "
+    
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          
+          try {
+            const results = JSON.parse(fs.readFileSync('reports/ci_benchmark/ci_results.json', 'utf8'));
+            
+            const tmScore = results.casp_benchmark.mean_tm_score.toFixed(3);
+            const runtime = results.performance_benchmark.mean_runtime_s.toFixed(2);
+            const memory = results.performance_benchmark.peak_memory_gb.toFixed(1);
+            
+            const tmPass = results.casp_benchmark.meets_tm_target ? '✅' : '❌';
+            const runtimePass = results.performance_benchmark.meets_runtime_target ? '✅' : '❌';
+            const memoryPass = results.performance_benchmark.meets_memory_target ? '✅' : '❌';
+            
+            const comment = `## 🧬 OpenFold++ GPU Benchmark Results
+            
+            **Configuration**: ${{ matrix.benchmark_config.name }}
+            
+            | Metric | Result | Target | Status |
+            |--------|--------|--------|--------|
+            | TM-Score | ${tmScore} | ≥${{ matrix.benchmark_config.tm_threshold }} | ${tmPass} |
+            | Runtime | ${runtime}s | ≤${{ matrix.benchmark_config.runtime_threshold }}s | ${runtimePass} |
+            | Memory | ${memory}GB | ≤${{ matrix.benchmark_config.memory_threshold }}GB | ${memoryPass} |
+            
+            **Overall**: ${{ steps.check_results.outputs.benchmark_pass == 'true' && '✅ PASS' || '❌ FAIL' }}
+            
+            <details>
+            <summary>Detailed Results</summary>
+            
+            ### CASP Benchmark
+            - **Targets evaluated**: ${results.casp_benchmark.targets_evaluated}
+            - **Mean TM-score**: ${tmScore}
+            - **TM ≥ 0.7**: ${results.casp_benchmark.targets_tm_above_07}/${results.casp_benchmark.targets_evaluated}
+            
+            ### Performance Benchmark  
+            - **Mean runtime**: ${runtime}s
+            - **Peak memory**: ${memory}GB
+            - **GPU utilization**: ${results.performance_benchmark.gpu_utilization_pct}%
+            
+            </details>
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          } catch (error) {
+            console.log('Error posting comment:', error);
+          }
+    
+    - name: Fail if benchmarks don't meet targets
+      if: steps.check_results.outputs.benchmark_pass != 'true'
+      run: |
+        echo "❌ Benchmark failed to meet targets:"
+        echo "   TM-score: ${{ steps.check_results.outputs.tm_score }} (target: ≥${{ matrix.benchmark_config.tm_threshold }})"
+        echo "   Runtime: ${{ steps.check_results.outputs.runtime }}s (target: ≤${{ matrix.benchmark_config.runtime_threshold }}s)"
+        echo "   Memory: ${{ steps.check_results.outputs.memory }}GB (target: ≤${{ matrix.benchmark_config.memory_threshold }}GB)"
+        exit 1
+
+  benchmark-summary:
+    name: Benchmark Summary
+    needs: gpu-benchmark
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+    
+    - name: Generate summary report
+      run: |
+        echo "# OpenFold++ Benchmark Summary" > summary.md
+        echo "" >> summary.md
+        echo "**Commit**: ${{ github.sha }}" >> summary.md
+        echo "**Branch**: ${{ github.ref_name }}" >> summary.md
+        echo "**Trigger**: ${{ github.event_name }}" >> summary.md
+        echo "" >> summary.md
+        
+        # Process results from both configurations
+        for config in production research; do
+          if [ -f "benchmark-results-${config}/ci_results.json" ]; then
+            echo "## ${config^} Configuration" >> summary.md
+            python3 -c "
+            import json
+            with open('benchmark-results-${config}/ci_results.json') as f:
+              results = json.load(f)
+            
+            tm = results['casp_benchmark']['mean_tm_score']
+            runtime = results['performance_benchmark']['mean_runtime_s']  
+            memory = results['performance_benchmark']['peak_memory_gb']
+            
+            print(f'- **TM-Score**: {tm:.3f}')
+            print(f'- **Runtime**: {runtime:.2f}s')
+            print(f'- **Memory**: {memory:.1f}GB')
+            " >> summary.md
+            echo "" >> summary.md
+          fi
+        done
+    
+    - name: Upload summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: benchmark-summary
+        path: summary.md
+
+  notify-slack:
+    name: Notify Slack
+    needs: [gpu-benchmark, benchmark-summary]
+    runs-on: ubuntu-latest
+    if: always() && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Notify Slack on failure
+      if: needs.gpu-benchmark.result == 'failure'
+      uses: 8398a7/action-slack@v3
+      with:
+        status: failure
+        text: "🚨 OpenFold++ GPU benchmark failed on main branch"
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+    
+    - name: Notify Slack on success
+      if: needs.gpu-benchmark.result == 'success'
+      uses: 8398a7/action-slack@v3
+      with:
+        status: success
+        text: "✅ OpenFold++ GPU benchmark passed on main branch"
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
