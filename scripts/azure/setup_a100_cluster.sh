@@ -106,7 +106,7 @@ else
         --max-count 3 \
         --node-osdisk-size 512 \
         --node-taints nvidia.com/gpu=true:NoSchedule \
-        --labels pool=gpu,accelerator=nvidia-tesla-a100,gpu-memory=80gb \
+        --labels pool=gpu,accelerator=nvidia_tesla_a100,gpu_memory=80gb \
         --zones 1 2 3
     
     echo "✅ Added A100 GPU node pool"
@@ -208,7 +208,7 @@ spec:
         memory: "32Gi"
         cpu: "8"
   nodeSelector:
-    accelerator: nvidia-tesla-a100
+    accelerator: nvidia_tesla_a100
   tolerations:
   - key: nvidia.com/gpu
     operator: Exists
