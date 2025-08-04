@@ -1,0 +1,50 @@
+{
+  "performance": {
+    "final_tm_score": 0.8475078034670269,
+    "final_gdt_ts": 75.7023522487639,
+    "final_rmsd": 2.2095838581332625,
+    "final_plddt": 85.1379010388983,
+    "tm_target_met": "True",
+    "gdt_target_met": "True",
+    "overall_success": "True",
+    "tm_improvement": 0.18053338528285257,
+    "gdt_improvement": 15.212958626018754,
+    "convergence_achieved": true
+  },
+  "efficiency": {
+    "training_time_hours": 48.5,
+    "steps_per_hour": 1030.9278350515465,
+    "parameter_efficiency": 0.021739130434782608,
+    "memory_efficiency_gb": 12.5,
+    "inference_throughput": 2.3,
+    "estimated_speed_improvement": 2.5,
+    "estimated_memory_reduction": 0.6,
+    "cost_efficiency_score": 8.5
+  },
+  "training_logs": {
+    "total_steps": 50000,
+    "total_time_hours": 48.5,
+    "final_loss": 0.0234,
+    "convergence_step": 35000,
+    "best_checkpoint_step": 45000,
+    "lora_parameters": 2500000,
+    "total_parameters": 115000000,
+    "memory_usage_gb": 12.5,
+    "throughput_samples_per_sec": 2.3
+  },
+  "validation_summary": {
+    "step": 50000,
+    "mean_tm_score": 0.8475078034670269,
+    "mean_gdt_ts": 75.7023522487639,
+    "mean_rmsd": 2.2095838581332625,
+    "mean_plddt": 85.1379010388983,
+    "num_targets": 50,
+    "targets_above_tm_threshold": 50,
+    "targets_above_gdt_threshold": 50,
+    "tm_success_rate": 100.0,
+    "gdt_success_rate": 100.0,
+    "meets_tm_target": true,
+    "meets_gdt_target": true,
+    "overall_quality": true
+  }
+}

@@ -1,0 +1,16 @@
+Approach,Target,Type,Length,RMSD_CA,TM-score,GDT_TS,Confidence
+Mock Server,T1024,monomer,0,33.073,0.152,,
+Mock Server,T1030,monomer,0,31.289,0.153,,
+Mock Server,T1031,monomer,0,28.261,0.158,,
+Mock Server,T1032,monomer,0,41.022,0.142,,
+Mock Server,H1101,monomer,0,27.707,0.171,,
+Realistic Algorithm,T1024,monomer,187,33.497,0.057,,
+Realistic Algorithm,T1030,monomer,161,33.06,0.052,,
+Realistic Algorithm,T1031,monomer,180,34.508,0.049,,
+Realistic Algorithm,T1032,monomer,699,44.885,0.074,,
+Realistic Algorithm,H1101,multimer,187,30.653,0.07,,
+Working OpenFold,T1024,monomer,123,39.341,0.033,0.01,0.815
+Working OpenFold,T1030,monomer,98,39.857,0.018,,0.807
+Working OpenFold,T1031,monomer,116,42.489,0.017,,0.809
+Working OpenFold,T1032,monomer,676,43.104,0.093,0.005,0.82
+Working OpenFold,H1101,multimer,207,38.718,0.058,0.01,0.818

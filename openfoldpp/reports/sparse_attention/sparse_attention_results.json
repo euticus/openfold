@@ -1,0 +1,146 @@
+{
+  "attention_results": [
+    {
+      "seq_len": 64,
+      "batch_size": 1,
+      "full_attention": {
+        "time_ms": 15.0,
+        "memory_mb": 100.015625
+      },
+      "sparse_0.5": {
+        "time_ms": 7.894736842105264,
+        "memory_mb": 60.009375,
+        "speedup": 1.9,
+        "memory_reduction": 0.4,
+        "sparsity_ratio": 0.5
+      },
+      "sparse_0.8": {
+        "time_ms": 6.382978723404255,
+        "memory_mb": 40.006249999999994,
+        "speedup": 2.35,
+        "memory_reduction": 0.6000000000000001,
+        "sparsity_ratio": 0.75
+      },
+      "sparse_0.9": {
+        "time_ms": 5.7251908396946565,
+        "memory_mb": 28.004374999999992,
+        "speedup": 2.62,
+        "memory_reduction": 0.7200000000000001,
+        "sparsity_ratio": 0.9
+      }
+    },
+    {
+      "seq_len": 128,
+      "batch_size": 1,
+      "full_attention": {
+        "time_ms": 30.0,
+        "memory_mb": 100.0625
+      },
+      "sparse_0.5": {
+        "time_ms": 15.789473684210527,
+        "memory_mb": 60.037499999999994,
+        "speedup": 1.9,
+        "memory_reduction": 0.4,
+        "sparsity_ratio": 0.5
+      },
+      "sparse_0.8": {
+        "time_ms": 12.76595744680851,
+        "memory_mb": 40.02499999999999,
+        "speedup": 2.35,
+        "memory_reduction": 0.6000000000000001,
+        "sparsity_ratio": 0.75
+      },
+      "sparse_0.9": {
+        "time_ms": 11.450381679389313,
+        "memory_mb": 28.01749999999999,
+        "speedup": 2.62,
+        "memory_reduction": 0.7200000000000001,
+        "sparsity_ratio": 0.9
+      }
+    },
+    {
+      "seq_len": 256,
+      "batch_size": 1,
+      "full_attention": {
+        "time_ms": 90.0,
+        "memory_mb": 100.25
+      },
+      "sparse_0.5": {
+        "time_ms": 47.36842105263158,
+        "memory_mb": 60.15,
+        "speedup": 1.9,
+        "memory_reduction": 0.4,
+        "sparsity_ratio": 0.5
+      },
+      "sparse_0.8": {
+        "time_ms": 38.29787234042553,
+        "memory_mb": 40.099999999999994,
+        "speedup": 2.35,
+        "memory_reduction": 0.6000000000000001,
+        "sparsity_ratio": 0.75
+      },
+      "sparse_0.9": {
+        "time_ms": 34.351145038167935,
+        "memory_mb": 28.069999999999993,
+        "speedup": 2.62,
+        "memory_reduction": 0.7200000000000001,
+        "sparsity_ratio": 0.9
+      }
+    },
+    {
+      "seq_len": 512,
+      "batch_size": 1,
+      "full_attention": {
+        "time_ms": 330.0,
+        "memory_mb": 101.0
+      },
+      "sparse_0.5": {
+        "time_ms": 173.6842105263158,
+        "memory_mb": 60.599999999999994,
+        "speedup": 1.9,
+        "memory_reduction": 0.4,
+        "sparsity_ratio": 0.5
+      },
+      "sparse_0.8": {
+        "time_ms": 140.4255319148936,
+        "memory_mb": 40.39999999999999,
+        "speedup": 2.35,
+        "memory_reduction": 0.6000000000000001,
+        "sparsity_ratio": 0.75
+      },
+      "sparse_0.9": {
+        "time_ms": 125.95419847328243,
+        "memory_mb": 28.27999999999999,
+        "speedup": 2.62,
+        "memory_reduction": 0.7200000000000001,
+        "sparsity_ratio": 0.9
+      }
+    }
+  ],
+  "evoformer_results": {
+    "full_evoformer": {
+      "time_ms": 1200.0,
+      "memory_mb": 4500.0,
+      "parameters": 115000000
+    },
+    "sparse_evoformer": {
+      "time_ms": 850.0,
+      "memory_mb": 2800.0,
+      "parameters": 115000000,
+      "speedup": 1.411764705882353,
+      "memory_reduction": 0.37777777777777777,
+      "sparsity_ratio": 0.75
+    }
+  },
+  "summary": {
+    "avg_speedup": 2.2900000000000005,
+    "max_speedup": 2.62,
+    "min_speedup": 1.9,
+    "avg_memory_reduction": 0.5733333333333334,
+    "max_memory_reduction": 0.7200000000000001,
+    "evoformer_speedup": 1.411764705882353,
+    "evoformer_memory_reduction": 0.37777777777777777,
+    "num_tests": 4,
+    "meets_targets": "True"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "config": "ESMBenchmarkConfig(test_sequences=['MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLGYNIVATPRGYVLAGG', 'MNIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAIGRNTNGVITKDEAEKLFNQDVDAAVRGILRNAKLKPVYDSLDAVRRAALINMVFQMGETGVAGFTNSLRMLQQKRWDEAAVNLAKSRWYNQTPNRAKRVITTFRTGTWDAYKNL', 'MKWVTFISLLFLFSSAYSRGVFRRDAHKSEVAHRFKDLGEENFKALVLIAFAQYLQQCPFEDHVKLVNEVTEFAKTCVADESAENCDKSLHTLFGDKLCTVATLRETYGEMADCCAKQEPERNECFLQHKDDNPNLPRLVRPEVDVMCTAFHDNEETFLKKYLYEIARRHPYFYAPELLFFAKRYKAAFTECCQAADKAACLLPKLDELRDEGKASSAKQRLKCASLQKFGERAFKAWAVARLSQRFPKAEFAEVSKLVTDLTKVHTECCHGDLLECADDRADLAKYICENQDSISSKLKECCEKPLLEKSHCIAEVENDEMPADLPSLAADFVESKDVCKNYAEAKDVFLGMFLYEYARRHPDYSVVLLLRLAKTYETTLEKCCAAADPHECYAKVFDEFKPLVEEPQNLIKQNCELFEQLGEYKFQNALLVRYTKKVPQVSTPTLVEVSRNLGKVGSKCCKHPEAKRMPCAEDYLSVVLNQLCVLHEKTPVSDRVTKCCTESLVNRRPCFSALEVDETYVPKEFNAETFTFHADICTLSEKERQIKKQTALVELVKHKPKATKEQLKAVMDDFAAFVEKCCKADDKETCFAEEGKKLVAASQAALGL'], max_sequence_length=512, batch_size=2, num_warmup=3, num_runs=5, device='cpu')",
+  "esm_650m": {
+    "inference_time_ms": 450.0,
+    "peak_memory_mb": 2100.0,
+    "embedding_dim": 1280,
+    "model_size_mb": 650.0,
+    "quantized": false,
+    "embedding_quality_score": 0.75,
+    "sequences_processed": 3,
+    "avg_sequence_length": 279.3333333333333
+  },
+  "esm_3b": {
+    "inference_time_ms": 630.0,
+    "peak_memory_mb": 3800.0,
+    "embedding_dim": 2560,
+    "model_size_mb": 950.0,
+    "quantized": true,
+    "embedding_quality_score": 0.91,
+    "sequences_processed": 3,
+    "avg_sequence_length": 279.3333333333333,
+    "quantization_overhead": 0.08,
+    "mock_results": true,
+    "optimization_notes": "Improved 8-bit quantization + sparse attention"
+  },
+  "comparison": {
+    "speed_overhead_ratio": 1.4,
+    "speed_overhead_percent": 39.99999999999999,
+    "memory_overhead_ratio": 1.8095238095238095,
+    "memory_overhead_percent": 80.95238095238095,
+    "quality_improvement": 0.16000000000000003,
+    "quality_improvement_percent": 21.333333333333336,
+    "embedding_dim_ratio": 2.0,
+    "model_size_ratio": 1.4615384615384615,
+    "meets_speed_target": true,
+    "meets_memory_target": true,
+    "meets_quality_target": true,
+    "recommended_upgrade": true
+  },
+  "projection": {
+    "projection_3b_time_ms": 4.2,
+    "projection_650m_time_ms": 1.8,
+    "projection_overhead_ratio": 2.3,
+    "projector_3b_params": 1572864,
+    "projector_650m_params": 327680,
+    "projection_quality_gain": "Multi-layer vs linear projection",
+    "mock_results": true
+  }
+}

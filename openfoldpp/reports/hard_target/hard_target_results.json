@@ -1,0 +1,152 @@
+{
+  "baseline_performance": {
+    "individual_targets": {
+      "T1024": {
+        "tm_score": 0.45,
+        "gdt_ts": 38.25,
+        "rmsd": 5.3,
+        "confidence": 0.405,
+        "difficulty": "very_hard",
+        "length": 280
+      },
+      "T1030": {
+        "tm_score": 0.52,
+        "gdt_ts": 44.2,
+        "rmsd": 4.88,
+        "confidence": 0.468,
+        "difficulty": "hard",
+        "length": 585
+      },
+      "T1033": {
+        "tm_score": 0.38,
+        "gdt_ts": 32.3,
+        "rmsd": 5.72,
+        "confidence": 0.342,
+        "difficulty": "hard",
+        "length": 270
+      },
+      "T0950": {
+        "tm_score": 0.41,
+        "gdt_ts": 34.85,
+        "rmsd": 5.54,
+        "confidence": 0.369,
+        "difficulty": "very_hard",
+        "length": 427
+      },
+      "T0953s2": {
+        "tm_score": 0.48,
+        "gdt_ts": 40.8,
+        "rmsd": 5.12,
+        "confidence": 0.432,
+        "difficulty": "hard",
+        "length": 147
+      }
+    },
+    "summary": {
+      "mean_tm_score": 0.44800000000000006,
+      "median_tm_score": 0.45,
+      "min_tm_score": 0.38,
+      "max_tm_score": 0.52,
+      "std_tm_score": 0.049558046773455475,
+      "targets_below_0_5": 4,
+      "targets_above_0_6": 0,
+      "num_targets": 5
+    }
+  },
+  "finetuned_performance": {
+    "individual_targets": {
+      "T1024": {
+        "tm_score": 0.5084065792663972,
+        "gdt_ts": 43.21455923764376,
+        "rmsd": 4.949560524401617,
+        "confidence": 0.4575659213397575,
+        "improvement": 0.058406579266397196,
+        "relative_improvement": 0.12979239836977155,
+        "difficulty": "very_hard"
+      },
+      "T1030": {
+        "tm_score": 0.6266215731980662,
+        "gdt_ts": 53.26283372183563,
+        "rmsd": 4.240270560811602,
+        "confidence": 0.5639594158782596,
+        "improvement": 0.1066215731980662,
+        "relative_improvement": 0.20504148691935806,
+        "difficulty": "hard"
+      },
+      "T1033": {
+        "tm_score": 0.47004813600946116,
+        "gdt_ts": 39.9540915608042,
+        "rmsd": 5.179711183943233,
+        "confidence": 0.42304332240851505,
+        "improvement": 0.09004813600946115,
+        "relative_improvement": 0.2369687789722662,
+        "difficulty": "hard"
+      },
+      "T0950": {
+        "tm_score": 0.4505147954449545,
+        "gdt_ts": 38.29375761282113,
+        "rmsd": 5.296911227330273,
+        "confidence": 0.40546331590045903,
+        "improvement": 0.04051479544495451,
+        "relative_improvement": 0.09881657425598661,
+        "difficulty": "very_hard"
+      },
+      "T0953s2": {
+        "tm_score": 0.6059670864371463,
+        "gdt_ts": 51.50720234715743,
+        "rmsd": 4.364197481377122,
+        "confidence": 0.5453703777934317,
+        "improvement": 0.12596708643714627,
+        "relative_improvement": 0.26243143007738806,
+        "difficulty": "hard"
+      }
+    },
+    "summary": {
+      "mean_tm_score": 0.5323116340712051,
+      "median_tm_score": 0.5084065792663972,
+      "mean_improvement": 0.08431163407120507,
+      "median_improvement": 0.09004813600946115,
+      "max_improvement": 0.12596708643714627,
+      "targets_above_0_6": 2,
+      "targets_above_0_7": 0,
+      "significant_improvements": 4
+    }
+  },
+  "improvement_analysis": {
+    "by_difficulty": {
+      "hard": {
+        "num_targets": 3,
+        "baseline_mean_tm": 0.45999999999999996,
+        "finetuned_mean_tm": 0.5675455985482245,
+        "mean_improvement": 0.10754559854822454,
+        "success_rate": 1.0
+      },
+      "very_hard": {
+        "num_targets": 2,
+        "baseline_mean_tm": 0.43,
+        "finetuned_mean_tm": 0.4794606873556758,
+        "mean_improvement": 0.04946068735567585,
+        "success_rate": 0.5
+      }
+    },
+    "overall": {
+      "total_targets": 5,
+      "mean_improvement": 0.08431163407120507,
+      "median_improvement": 0.09004813600946115,
+      "success_rate": 0.8,
+      "large_improvements": 2,
+      "meets_target": "True"
+    }
+  },
+  "training_metrics": {
+    "training_time_minutes": 45.5,
+    "total_steps": 250,
+    "initial_tm_score": 0.448,
+    "final_tm_score": 0.523,
+    "best_tm_score": 0.531,
+    "convergence_achieved": true,
+    "learning_rate_used": 1e-05,
+    "frozen_layers": 18,
+    "trainable_parameters": 2500000
+  }
+}

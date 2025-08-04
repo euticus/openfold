@@ -1,0 +1,55 @@
+{
+  "config": "CIBenchmarkConfig(tm_threshold=0.66, runtime_threshold=5.5, memory_threshold=8.0, quick_mode=True, casp_benchmark=True, performance_benchmark=True, gpu_warmup=True, measure_gpu_utilization=True, output_dir=PosixPath('test_reports'), save_detailed_logs=True)",
+  "system_info": {
+    "python_version": "3.11.4 (main, Jul  5 2023, 09:00:44) [Clang 14.0.6 ]",
+    "pytorch_version": "2.2.2",
+    "cuda_available": false,
+    "gpu_count": 0,
+    "cpu_count": 8,
+    "total_memory_gb": 16.0
+  },
+  "casp_benchmark": {
+    "targets_evaluated": 2,
+    "mean_tm_score": 0.7563437401755797,
+    "median_tm_score": 0.7563437401755797,
+    "min_tm_score": 0.7498583853966879,
+    "max_tm_score": 0.7628290949544714,
+    "targets_tm_above_07": 2,
+    "mean_runtime_s": 0.10910260677337646,
+    "individual_tm_scores": [
+      0.7628290949544714,
+      0.7498583853966879
+    ],
+    "individual_runtimes": [
+      0.10984015464782715,
+      0.10836505889892578
+    ],
+    "meets_tm_target": "True"
+  },
+  "performance_benchmark": {
+    "test_sequence_lengths": [
+      100,
+      200
+    ],
+    "mean_runtime_s": 0.05659806728363037,
+    "runtime_300aa_s": 0.05659806728363037,
+    "peak_memory_gb": 0.0,
+    "mean_gpu_utilization_pct": 0.0,
+    "individual_runtimes": [
+      0.05551004409790039,
+      0.05768609046936035
+    ],
+    "individual_memory_usage": [
+      0.0,
+      0.0
+    ],
+    "meets_runtime_target": "True",
+    "meets_memory_target": "True"
+  },
+  "overall_assessment": {
+    "tm_score_pass": "True",
+    "runtime_pass": "True",
+    "memory_pass": "True",
+    "overall_pass": "True"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "summary": {
+    "total_targets": 3,
+    "successful_predictions": 0,
+    "success_rate": 0.0,
+    "failed_predictions": 3
+  },
+  "target_types": {
+    "monomer": 2,
+    "multimer": 1
+  }
+}

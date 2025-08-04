@@ -1,0 +1,35 @@
+2025-08-02 15:35:29,792 - INFO - Production benchmark initialized in quick mode
+2025-08-02 15:35:29,792 - INFO - 🚀 Starting Complete Production Benchmark
+2025-08-02 15:35:29,792 - INFO - ============================================================
+2025-08-02 15:35:29,793 - INFO - 🔬 Benchmarking Phase A: PLM Integration
+2025-08-02 15:35:29,793 - INFO - ⚡ Benchmarking Phase B: Slim EvoFormer
+2025-08-02 15:35:29,793 - INFO - 🎓 Benchmarking Phase C: Teacher-Student Distillation
+2025-08-02 15:35:29,793 - INFO - 🌟 Benchmarking Phase D: SE(3) Diffusion Refinement
+2025-08-02 15:35:29,793 - INFO - 🚀 Running End-to-End Production Benchmark
+2025-08-02 15:35:29,793 - INFO - 📊 Assessing Production Readiness
+2025-08-02 15:35:29,793 - INFO - ✅ Complete production benchmark finished
+2025-08-02 15:35:29,794 - INFO - Results saved to reports/production
+2025-08-03 12:42:10,433 - INFO - Production benchmark initialized in quick mode
+2025-08-03 12:42:10,434 - INFO - 🚀 Starting Complete Production Benchmark
+2025-08-03 12:42:10,434 - INFO - ============================================================
+2025-08-03 12:42:10,434 - INFO - 🔬 Benchmarking Phase A: PLM Integration
+2025-08-03 12:42:10,434 - INFO - ⚡ Benchmarking Phase B: Slim EvoFormer
+2025-08-03 12:42:10,434 - INFO - 🎓 Benchmarking Phase C: Teacher-Student Distillation
+2025-08-03 12:42:10,434 - INFO - 🌟 Benchmarking Phase D: SE(3) Diffusion Refinement
+2025-08-03 12:42:10,434 - INFO - 🚀 Running End-to-End Production Benchmark
+2025-08-03 12:42:10,435 - INFO - 🧬 Running CASP Dataset Evaluation
+2025-08-03 12:42:10,435 - INFO - 📊 Assessing Production Readiness
+2025-08-03 12:42:10,435 - INFO - ✅ Complete production benchmark finished
+2025-08-03 12:42:10,436 - INFO - Results saved to reports/production
+2025-08-03 12:46:47,103 - INFO - Production benchmark initialized in quick mode
+2025-08-03 12:46:47,104 - INFO - 🚀 Starting Complete Production Benchmark
+2025-08-03 12:46:47,104 - INFO - ============================================================
+2025-08-03 12:46:47,104 - INFO - 🔬 Benchmarking Phase A: PLM Integration
+2025-08-03 12:46:47,104 - INFO - ⚡ Benchmarking Phase B: Slim EvoFormer
+2025-08-03 12:46:47,104 - INFO - 🎓 Benchmarking Phase C: Teacher-Student Distillation
+2025-08-03 12:46:47,104 - INFO - 🌟 Benchmarking Phase D: SE(3) Diffusion Refinement
+2025-08-03 12:46:47,104 - INFO - 🚀 Running End-to-End Production Benchmark
+2025-08-03 12:46:47,104 - INFO - 🧬 Running CASP Dataset Evaluation
+2025-08-03 12:46:47,104 - INFO - 📊 Assessing Production Readiness
+2025-08-03 12:46:47,105 - INFO - ✅ Complete production benchmark finished
+2025-08-03 12:46:47,106 - INFO - Results saved to reports/production

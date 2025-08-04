@@ -1,0 +1,4 @@
+target_id,target_type,num_chains,total_length,status,time_s,memory_mb
+T1031,monomer,1,180,api_failed,17.568280437000794,86.1796875
+H1101,multimer,2,367,api_failed,33.497730557995965,86.1875
+T1030,monomer,1,161,api_failed,16.43765813400387,86.75390625

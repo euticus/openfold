@@ -1,0 +1,6 @@
+target_id,target_type,length,confidence,rmsd_ca,tm_score,gdt_ts,helix_fraction,sheet_fraction,coil_fraction,model_type
+T1024,monomer,123,0.815,39.341,0.033,0.01,0.444,0.417,0.139,working_openfold
+T1030,monomer,98,0.807,39.857,0.018,,0.472,0.317,0.211,working_openfold
+T1031,monomer,116,0.809,42.489,0.017,,0.417,0.356,0.228,working_openfold
+T1032,monomer,676,0.82,43.104,0.093,0.005,0.352,0.505,0.143,working_openfold
+H1101,multimer,207,0.818,38.718,0.058,0.01,0.433,0.387,0.18,working_openfold

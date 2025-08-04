@@ -1,0 +1,6 @@
+target_id,target_type,length,confidence,rmsd_ca,tm_score,gdt_ts,model_type,weights_type
+T1024,monomer,187,0.329,34.27,0.055,0.009,trained_openfold,TRAINED_NEURAL_NETWORK
+T1030,monomer,161,0.335,33.12,0.057,0.011,trained_openfold,TRAINED_NEURAL_NETWORK
+T1031,monomer,180,0.333,32.087,0.058,0.008,trained_openfold,TRAINED_NEURAL_NETWORK
+T1032,monomer,728,0.329,45.238,0.089,0.002,trained_openfold,TRAINED_NEURAL_NETWORK
+H1101,multimer,367,0.331,36.682,0.075,0.007,trained_openfold,TRAINED_NEURAL_NETWORK

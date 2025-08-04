@@ -1,0 +1,26 @@
+2025-08-03 15:38:36,957 - INFO - GPU CI benchmark initialized
+2025-08-03 15:38:36,957 - INFO - 🚀 Starting OpenFold++ GPU CI Benchmark
+2025-08-03 15:38:36,958 - INFO - ============================================================
+2025-08-03 15:38:36,958 - INFO - 📊 Collecting system information
+2025-08-03 15:38:36,958 - INFO -   GPU: None
+2025-08-03 15:38:36,958 - INFO -   GPU Memory: 0.0GB
+2025-08-03 15:38:36,958 - INFO -   CUDA: None
+2025-08-03 15:38:36,958 - INFO - 🧬 Running CASP benchmark
+2025-08-03 15:38:36,958 - INFO -   Processing T1024 (65 AA)
+2025-08-03 15:38:37,069 - INFO -     TM-score: 0.763, Runtime: 0.11s
+2025-08-03 15:38:37,069 - INFO -   Processing T1030 (64 AA)
+2025-08-03 15:38:37,178 - INFO -     TM-score: 0.750, Runtime: 0.11s
+2025-08-03 15:38:37,181 - INFO -   Mean TM-score: 0.756 (target: ≥0.66)
+2025-08-03 15:38:37,181 - INFO -   TM target: ✅ PASS
+2025-08-03 15:38:37,181 - INFO - ⚡ Running performance benchmark
+2025-08-03 15:38:37,181 - INFO -   Testing 100 AA sequence
+2025-08-03 15:38:37,237 - INFO -     Runtime: 0.06s, Memory: 0.0GB
+2025-08-03 15:38:37,237 - INFO -   Testing 200 AA sequence
+2025-08-03 15:38:37,295 - INFO -     Runtime: 0.06s, Memory: 0.0GB
+2025-08-03 15:38:37,295 - INFO -   Runtime (300 AA): 0.06s (target: ≤5.5s)
+2025-08-03 15:38:37,295 - INFO -   Peak memory: 0.0GB (target: ≤8.0GB)
+2025-08-03 15:38:37,296 - INFO -   Runtime target: ✅ PASS
+2025-08-03 15:38:37,296 - INFO -   Memory target: ✅ PASS
+2025-08-03 15:38:37,296 - INFO - ✅ Benchmark complete
+2025-08-03 15:38:37,296 - INFO - Overall result: ✅ PASS
+2025-08-03 15:38:37,297 - INFO - Results saved to test_reports

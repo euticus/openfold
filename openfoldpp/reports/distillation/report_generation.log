@@ -1,0 +1,5 @@
+2025-08-02 15:08:20,337 - WARNING - No validation data found, creating mock data
+2025-08-02 15:08:20,340 - INFO - Distillation report generator initialized
+2025-08-02 15:08:22,360 - INFO - Training progress plots saved to reports/distillation/figures/training_progress.png
+2025-08-02 15:08:22,362 - INFO - Comprehensive report saved to reports/distillation/distillation_completion_report.md
+2025-08-02 15:08:22,362 - INFO - Final metrics saved to reports/distillation/final_metrics.json

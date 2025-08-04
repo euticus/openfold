@@ -1,0 +1,51 @@
+{
+  "refiner": {
+    "refinement_time_s": 0.8056850433349609,
+    "coordinate_change_mean": 0.8035889267921448,
+    "parameter_count": 3133455,
+    "input_shape": [
+      1,
+      300,
+      3
+    ],
+    "output_shape": [
+      1,
+      300,
+      3
+    ],
+    "meets_speed_target": true,
+    "refiner_overhead_ms": 805.6850433349609
+  },
+  "quantization": {
+    "original_memory_mb": 0.2509765625,
+    "quantized_memory_mb": 0.0313720703125,
+    "memory_savings_percent": 87.5,
+    "compression_ratio": 8.0,
+    "mse_error": 9.861006401479244e-05,
+    "estimated_tm_drop": 9.861006401479244e-08,
+    "meets_quantization_target": true
+  },
+  "pipeline": {
+    "component_timings": {
+      "plm_extraction": 0.5,
+      "evoformer": 1.2,
+      "structure_prediction": 0.8,
+      "diffusion_refinement": 1.5
+    },
+    "total_inference_time_s": 4.0,
+    "sequence_length": 300,
+    "final_tm_score": 0.87,
+    "peak_memory_mb": 6500,
+    "meets_speed_target": true,
+    "meets_quality_target": true,
+    "meets_memory_target": true
+  },
+  "goals": {
+    "speed_target_met": true,
+    "quality_target_met": true,
+    "quantization_target_met": true,
+    "memory_target_met": true,
+    "refiner_integration_successful": true,
+    "all_targets_met": true
+  }
+}

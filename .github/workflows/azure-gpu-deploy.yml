@@ -1,0 +1,270 @@
+name: OdinFold Azure GPU Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      deployment_type:
+        description: 'Deployment type'
+        required: true
+        default: 'benchmark'
+        type: choice
+        options:
+        - benchmark
+        - production
+        - scaling-test
+
+env:
+  AZURE_RESOURCE_GROUP: "odinfold-rg"
+  AZURE_CLUSTER_NAME: "odinfold-cluster"
+  PYTHON_VERSION: "3.9"
+  PYTORCH_VERSION: "2.0.1"
+
+jobs:
+  azure-gpu-benchmark:
+    name: Azure GPU Cluster Benchmark
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Setup Azure CLI
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.30.0
+        inlineScript: |
+          az --version
+          az account show
+    
+    - name: Check Azure GPU Cluster Status
+      id: cluster_status
+      run: |
+        echo "🔍 Checking Azure GPU cluster status..."
+        
+        # Check if resource group exists
+        if az group show --name ${{ env.AZURE_RESOURCE_GROUP }} >/dev/null 2>&1; then
+          echo "✅ Resource group exists: ${{ env.AZURE_RESOURCE_GROUP }}"
+          echo "::set-output name=rg_exists::true"
+        else
+          echo "❌ Resource group not found: ${{ env.AZURE_RESOURCE_GROUP }}"
+          echo "::set-output name=rg_exists::false"
+        fi
+        
+        # Check cluster status
+        if az aks show --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_CLUSTER_NAME }} >/dev/null 2>&1; then
+          cluster_status=$(az aks show --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_CLUSTER_NAME }} --query "powerState.code" -o tsv)
+          echo "✅ Cluster exists: ${{ env.AZURE_CLUSTER_NAME }}"
+          echo "   Status: $cluster_status"
+          echo "::set-output name=cluster_exists::true"
+          echo "::set-output name=cluster_status::$cluster_status"
+        else
+          echo "❌ Cluster not found: ${{ env.AZURE_CLUSTER_NAME }}"
+          echo "::set-output name=cluster_exists::false"
+        fi
+    
+    - name: Get Cluster Credentials
+      if: steps.cluster_status.outputs.cluster_exists == 'true'
+      run: |
+        echo "🔑 Getting cluster credentials..."
+        az aks get-credentials --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_CLUSTER_NAME }} --overwrite-existing
+        
+        # Check nodes
+        kubectl get nodes -o wide
+        
+        # Check GPU nodes specifically
+        echo "🎯 GPU Nodes:"
+        kubectl get nodes -l accelerator=nvidia-tesla-v100 -o wide || echo "No V100 nodes found"
+        kubectl get nodes -l accelerator=nvidia-tesla-a100 -o wide || echo "No A100 nodes found"
+        kubectl get nodes -l node.kubernetes.io/instance-type | grep -i gpu || echo "No GPU instance types found"
+    
+    - name: Create OdinFold Namespace
+      if: steps.cluster_status.outputs.cluster_exists == 'true'
+      run: |
+        echo "📦 Creating OdinFold namespace..."
+        kubectl create namespace odinfold --dry-run=client -o yaml | kubectl apply -f -
+        kubectl label namespace odinfold app=odinfold --overwrite
+    
+    - name: Deploy OdinFold Benchmark Job
+      if: steps.cluster_status.outputs.cluster_exists == 'true'
+      run: |
+        echo "🚀 Deploying OdinFold benchmark job..."
+        
+        cat <<EOF | kubectl apply -f -
+        apiVersion: batch/v1
+        kind: Job
+        metadata:
+          name: odinfold-benchmark-$(date +%s)
+          namespace: odinfold
+          labels:
+            app: odinfold
+            component: benchmark
+        spec:
+          template:
+            metadata:
+              labels:
+                app: odinfold
+                component: benchmark
+            spec:
+              restartPolicy: Never
+              nodeSelector:
+                accelerator: nvidia-tesla-v100  # or nvidia-tesla-a100
+              tolerations:
+              - key: nvidia.com/gpu
+                operator: Exists
+                effect: NoSchedule
+              containers:
+              - name: odinfold-benchmark
+                image: pytorch/pytorch:2.0.1-cuda11.7-cudnn8-devel
+                resources:
+                  requests:
+                    nvidia.com/gpu: 1
+                    memory: "16Gi"
+                    cpu: "4"
+                  limits:
+                    nvidia.com/gpu: 1
+                    memory: "32Gi"
+                    cpu: "8"
+                command: ["/bin/bash"]
+                args:
+                - -c
+                - |
+                  echo "⚡ Starting OdinFold Benchmark on Azure GPU"
+                  nvidia-smi
+                  
+                  # Install dependencies
+                  pip install torch==${{ env.PYTORCH_VERSION }} torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+                  pip install numpy scipy matplotlib seaborn pandas psutil
+                  
+                  # Clone repository
+                  git clone https://github.com/euticus/openfold.git /workspace/odinfold
+                  cd /workspace/odinfold
+                  
+                  # Install OdinFold
+                  pip install -e .
+                  
+                  # Run benchmark
+                  python scripts/evaluation/gpu_ci_benchmark.py \
+                    --config production \
+                    --tm-threshold 0.66 \
+                    --runtime-threshold 5.5 \
+                    --memory-threshold 8.0 \
+                    --output-dir /tmp/benchmark_results \
+                    --quick
+                  
+                  # Show results
+                  echo "📊 Benchmark Results:"
+                  cat /tmp/benchmark_results/ci_report.md
+                  
+                  # Keep container alive for log collection
+                  sleep 300
+                env:
+                - name: CUDA_VISIBLE_DEVICES
+                  value: "0"
+                - name: NVIDIA_VISIBLE_DEVICES
+                  value: "all"
+                - name: NVIDIA_DRIVER_CAPABILITIES
+                  value: "compute,utility"
+        EOF
+    
+    - name: Monitor Benchmark Job
+      if: steps.cluster_status.outputs.cluster_exists == 'true'
+      run: |
+        echo "👀 Monitoring benchmark job..."
+        
+        # Wait for job to start
+        kubectl wait --for=condition=ready pod -l app=odinfold,component=benchmark -n odinfold --timeout=300s
+        
+        # Get job name
+        JOB_NAME=$(kubectl get jobs -n odinfold -l app=odinfold,component=benchmark --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}')
+        echo "Job name: $JOB_NAME"
+        
+        # Follow logs
+        kubectl logs -f job/$JOB_NAME -n odinfold --timeout=600s || true
+        
+        # Check job status
+        kubectl get job $JOB_NAME -n odinfold -o yaml
+    
+    - name: Collect Benchmark Results
+      if: steps.cluster_status.outputs.cluster_exists == 'true'
+      run: |
+        echo "📊 Collecting benchmark results..."
+        
+        # Get pod name
+        POD_NAME=$(kubectl get pods -n odinfold -l app=odinfold,component=benchmark --sort-by=.metadata.creationTimestamp -o jsonpath='{.items[-1].metadata.name}')
+        echo "Pod name: $POD_NAME"
+        
+        # Copy results from pod
+        kubectl cp odinfold/$POD_NAME:/tmp/benchmark_results ./azure_benchmark_results || echo "Failed to copy results"
+        
+        # Show results if available
+        if [ -f "./azure_benchmark_results/ci_report.md" ]; then
+          echo "✅ Benchmark completed successfully!"
+          echo "## Azure GPU Benchmark Results"
+          cat ./azure_benchmark_results/ci_report.md
+        else
+          echo "❌ Benchmark results not found"
+        fi
+    
+    - name: Upload Azure Benchmark Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: azure-gpu-benchmark-results
+        path: |
+          azure_benchmark_results/
+          *.log
+        retention-days: 30
+    
+    - name: Cleanup Benchmark Job
+      if: always() && steps.cluster_status.outputs.cluster_exists == 'true'
+      run: |
+        echo "🧹 Cleaning up benchmark job..."
+        kubectl delete jobs -n odinfold -l app=odinfold,component=benchmark --ignore-not-found=true
+        
+        # Keep namespace for future runs
+        echo "Namespace 'odinfold' preserved for future runs"
+    
+    - name: Scale Down Cluster (Optional)
+      if: github.event.inputs.deployment_type == 'benchmark' && steps.cluster_status.outputs.cluster_exists == 'true'
+      run: |
+        echo "💰 Scaling down cluster to save costs..."
+        az aks scale --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AZURE_CLUSTER_NAME }} --node-count 0
+        echo "Cluster scaled down. Scale up when needed with: az aks scale --node-count 1"
+
+  deployment-summary:
+    name: Azure Deployment Summary
+    needs: azure-gpu-benchmark
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Generate Deployment Summary
+      run: |
+        echo "# OdinFold Azure GPU Deployment Summary" > deployment_summary.md
+        echo "" >> deployment_summary.md
+        echo "**Deployment Type**: ${{ github.event.inputs.deployment_type || 'benchmark' }}" >> deployment_summary.md
+        echo "**Cluster**: ${{ env.AZURE_CLUSTER_NAME }}" >> deployment_summary.md
+        echo "**Resource Group**: ${{ env.AZURE_RESOURCE_GROUP }}" >> deployment_summary.md
+        echo "**Trigger**: ${{ github.event_name }}" >> deployment_summary.md
+        echo "**Commit**: ${{ github.sha }}" >> deployment_summary.md
+        echo "" >> deployment_summary.md
+        echo "## Status" >> deployment_summary.md
+        echo "- Benchmark Job: ${{ needs.azure-gpu-benchmark.result }}" >> deployment_summary.md
+        echo "" >> deployment_summary.md
+        echo "## Next Steps" >> deployment_summary.md
+        echo "1. Review benchmark results in artifacts" >> deployment_summary.md
+        echo "2. Scale up cluster for production workloads" >> deployment_summary.md
+        echo "3. Configure FoldForever integration" >> deployment_summary.md
+    
+    - name: Upload Deployment Summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: azure-deployment-summary
+        path: deployment_summary.md

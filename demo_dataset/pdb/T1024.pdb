@@ -1,0 +1,13 @@
+HEADER    REFERENCE STRUCTURE T1024
+REMARK   1 REFERENCE STRUCTURE FOR BENCHMARKING
+ATOM      1  CA  MET A   1      20.154  16.967  14.365  1.00 50.00           C
+ATOM      2  CA  LYS A   2      19.030  16.101  14.618  1.00 50.00           C
+ATOM      3  CA  LEU A   3      17.693  16.849  14.897  1.00 50.00           C
+ATOM      4  CA  LEU A   4      16.445  18.976  15.176  1.00 50.00           C
+ATOM      5  CA  VAL A   5      15.108  18.228  15.455  1.00 50.00           C
+ATOM      6  CA  LEU A   6      13.860  19.355  15.734  1.00 50.00           C
+ATOM      7  CA  GLY A   7      12.523  18.607  16.013  1.00 50.00           C
+ATOM      8  CA  LEU A   8      11.275  19.734  16.292  1.00 50.00           C
+ATOM      9  CA  GLY A   9       9.938  18.986  16.571  1.00 50.00           C
+ATOM     10  CA  ALA A  10       8.690  20.113  16.850  1.00 50.00           C
+END

@@ -1,0 +1,6 @@
+target_id,target_type,num_chains,total_length,mode,ligands_enabled,num_ligands,status,time_s,memory_before_mb,memory_after_mb,memory_delta_mb,confidence,model_version,processing_time_s,rmsd_ca,tm_score
+    T1031,monomer,1,180,monomer,False,0,success,3.45,86.2,86.8,0.6,0.872,openfold++_v1.0,3.44,,
+    T1030,monomer,1,161,monomer,False,0,success,3.28,86.8,86.8,0.0,0.911,openfold++_v1.0,3.27,,
+    H1101,multimer,2,367,multimer,False,0,success,7.31,86.2,86.9,0.7,0.652,openfold++_v1.0,7.29,,
+    T1024,monomer,1,187,monomer,False,0,success,3.0,86.9,86.9,0.1,0.773,openfold++_v1.0,2.99,,
+    T1032,monomer,1,932,monomer,False,0,success,10.02,86.8,86.9,0.1,0.573,openfold++_v1.0,10.04,,

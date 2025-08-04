@@ -1,4 +1,4 @@
-OPENFOLD TASKS  Absolutely — here's the overly detailed, Codex/Cursor-friendly OpenFold++ task list with expanded explanations, step-by-step intent, and clear objectives. It’s verbose on purpose to help clarify scope and give you (or an AI agent) everything needed to execute each task in isolation.
+OPENFOLD TASKSAbsolutely — here's the overly detailed, Codex/Cursor-friendly OpenFold++ task list with expanded explanations, step-by-step intent, and clear objectives. It’s verbose on purpose to help clarify scope and give you (or an AI agent) everything needed to execute each task in isolation.
 
 # ✅ OpenFold++ – Expanded Task List (Verbose + Codex/Cursor Friendly)
 

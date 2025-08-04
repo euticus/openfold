@@ -1,4 +1,4 @@
-name: OpenFold++ GPU Benchmark CI/CD
+name: OdinFold GPU Benchmark CI/CD
 
 on:
   push:
@@ -29,7 +29,7 @@ env:
 jobs:
   gpu-benchmark:
     name: GPU Performance Benchmark
-    runs-on: [self-hosted, gpu, A100]  # Requires self-hosted runner with A100
+    runs-on: [self-hosted, azure, gpu]  # Azure GPU cluster
     timeout-minutes: 60
     
     strategy:
@@ -220,7 +220,7 @@ jobs:
             const runtimePass = results.performance_benchmark.meets_runtime_target ? '✅' : '❌';
             const memoryPass = results.performance_benchmark.meets_memory_target ? '✅' : '❌';
             
-            const comment = `## 🧬 OpenFold++ GPU Benchmark Results
+            const comment = `## ⚡ OdinFold GPU Benchmark Results
             
             **Configuration**: ${{ matrix.benchmark_config.name }}
             
@@ -279,7 +279,7 @@ jobs:
     
     - name: Generate summary report
       run: |
-        echo "# OpenFold++ Benchmark Summary" > summary.md
+        echo "# OdinFold Benchmark Summary" > summary.md
         echo "" >> summary.md
         echo "**Commit**: ${{ github.sha }}" >> summary.md
         echo "**Branch**: ${{ github.ref_name }}" >> summary.md

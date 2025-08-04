@@ -1,0 +1,99 @@
+{
+  "individual_results": [
+    {
+      "target_id": "T1024",
+      "sequence_length": 64,
+      "difficulty": "easy",
+      "tm_score": 0.6828626192533053,
+      "gdt_ts": 68.07692307692308,
+      "rmsd": "2.1254833",
+      "sequence": "MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLG..."
+    },
+    {
+      "target_id": "T1030",
+      "sequence_length": 62,
+      "difficulty": "hard",
+      "tm_score": 0.6691305637359619,
+      "gdt_ts": 66.40625,
+      "rmsd": "2.1318328",
+      "sequence": "MKWVTFISLLFLFSSAYSRGVFRRDAHKSEVAHRFKDLGEENFKALVLIA..."
+    },
+    {
+      "target_id": "T1031",
+      "sequence_length": 62,
+      "difficulty": "medium",
+      "tm_score": 0.6558939218521118,
+      "gdt_ts": 64.0625,
+      "rmsd": "2.1882844",
+      "sequence": "MNIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAI..."
+    },
+    {
+      "target_id": "T1032",
+      "sequence_length": 53,
+      "difficulty": "easy",
+      "tm_score": 0.7652911433467159,
+      "gdt_ts": 78.7037037037037,
+      "rmsd": "1.4099741",
+      "sequence": "MKKYTCTVCGYIYNPEDGDPDNGVNPGTDFKDIPDDWVCPLCGVGKDQFE..."
+    },
+    {
+      "target_id": "T1033",
+      "sequence_length": 62,
+      "difficulty": "hard",
+      "tm_score": 0.6305974721908569,
+      "gdt_ts": 62.109375,
+      "rmsd": "2.341792",
+      "sequence": "MGSSHHHHHHSSGLVPRGSHMRGPNPTAASLEASAGPFTVRSFTVSRPSG..."
+    }
+  ],
+  "summary_stats": {
+    "mean_tm_score": 0.6807551440757903,
+    "median_tm_score": 0.6691305637359619,
+    "std_tm_score": 0.045650366727566734,
+    "min_tm_score": 0.6305974721908569,
+    "max_tm_score": 0.7652911433467159,
+    "mean_rmsd": "2.0394733",
+    "median_rmsd": "2.1318328",
+    "std_rmsd": "0.3242649",
+    "min_rmsd": "1.4099741",
+    "max_rmsd": "2.341792",
+    "mean_gdt_ts": 67.87175035612536,
+    "median_gdt_ts": 66.40625,
+    "targets_tm_above_0_5": 5,
+    "targets_tm_above_0_7": 1,
+    "targets_tm_above_0_8": 0,
+    "targets_rmsd_below_5": 5,
+    "targets_rmsd_below_3": 5,
+    "targets_rmsd_below_2": 1
+  },
+  "difficulty_breakdown": {
+    "easy": {
+      "count": 2,
+      "mean_tm_score": 0.7240768813000106,
+      "mean_rmsd": "1.7677287",
+      "targets": [
+        "T1024",
+        "T1032"
+      ]
+    },
+    "medium": {
+      "count": 1,
+      "mean_tm_score": 0.6558939218521118,
+      "mean_rmsd": "2.1882844",
+      "targets": [
+        "T1031"
+      ]
+    },
+    "hard": {
+      "count": 2,
+      "mean_tm_score": 0.6498640179634094,
+      "mean_rmsd": "2.2368126",
+      "targets": [
+        "T1030",
+        "T1033"
+      ]
+    }
+  },
+  "benchmark_time_s": 0.023279190063476562,
+  "targets_evaluated": 5
+}

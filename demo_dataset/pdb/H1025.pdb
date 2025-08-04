@@ -1,0 +1,13 @@
+HEADER    REFERENCE STRUCTURE H1025 MULTIMER
+REMARK   1 REFERENCE MULTIMER STRUCTURE FOR BENCHMARKING
+ATOM      1  CA  MET A   1      20.154  16.967  14.365  1.00 50.00           C
+ATOM      2  CA  LYS A   2      19.030  16.101  14.618  1.00 50.00           C
+ATOM      3  CA  LEU A   3      17.693  16.849  14.897  1.00 50.00           C
+ATOM      4  CA  LEU A   4      16.445  18.976  15.176  1.00 50.00           C
+ATOM      5  CA  VAL A   5      15.108  18.228  15.455  1.00 50.00           C
+ATOM      6  CA  MET B   1      25.154  16.967  14.365  1.00 50.00           C
+ATOM      7  CA  THR B   2      24.030  16.101  14.618  1.00 50.00           C
+ATOM      8  CA  GLU B   3      22.693  16.849  14.897  1.00 50.00           C
+ATOM      9  CA  TYR B   4      21.445  18.976  15.176  1.00 50.00           C
+ATOM     10  CA  LYS B   5      20.108  18.228  15.455  1.00 50.00           C
+END

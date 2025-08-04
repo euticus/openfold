@@ -1,0 +1,6 @@
+target_id,sequence_length,difficulty,domain_type,tm_score,gdt_ts,rmsd,rmsd_no_align,lddt,sequence,error
+T1024,64,easy,single,0.0,0.0,999.0,999.0,0.0,MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLG...,Invalid or missing coordinate(s) at line 46.
+T1030,585,hard,single,0.0,0.0,999.0,999.0,0.0,MKWVTFISLLFLFSSAYSRGVFRRDAHKSEVAHRFKDLGEENFKALVLIA...,Invalid or missing coordinate(s) at line 3.
+T1031,149,medium,single,0.0,0.0,999.0,999.0,0.0,MNIFEMLRIDEGLRLKIYKDTEGYYTIGIGHLLTKSPSLNAAKSELDKAI...,Invalid or missing coordinate(s) at line 3.
+T1032,53,easy,single,0.0,0.0,999.0,999.0,0.0,MKKYTCTVCGYIYNPEDGDPDNGVNPGTDFKDIPDDWVCPLCGVGKDQFE...,Invalid or missing coordinate(s) at line 36.
+T1033,270,hard,multi,0.0,0.0,999.0,999.0,0.0,MGSSHHHHHHSSGLVPRGSHMRGPNPTAASLEASAGPFTVRSFTVSRPSG...,Invalid or missing coordinate(s) at line 14.

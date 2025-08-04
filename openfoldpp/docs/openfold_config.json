@@ -1,0 +1,10 @@
+{
+  "weights_path": "openfold/resources/openfold_params/openfold_model_1_ptm.pt",
+  "gpu_available": false,
+  "databases": {
+    "uniref90": "databases/minimal_uniref90.fasta",
+    "templates": "databases/templates"
+  },
+  "device": "cpu",
+  "real_weights": true
+}

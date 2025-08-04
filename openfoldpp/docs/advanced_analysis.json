@@ -1,0 +1,35 @@
+{
+  "summary": {
+    "total_targets": 2,
+    "successful_predictions": 2,
+    "success_rate": 1.0,
+    "failed_predictions": 0
+  },
+  "performance": {
+    "avg_time_s": 7.02,
+    "median_time_s": 7.02,
+    "std_time_s": 1.41,
+    "min_time_s": 6.02,
+    "max_time_s": 8.02
+  },
+  "memory": {
+    "avg_memory_delta_mb": 0.4,
+    "max_memory_delta_mb": 0.6,
+    "min_memory_delta_mb": 0.1
+  },
+  "target_types": {
+    "generic": 2
+  },
+  "length_analysis": {
+    "300-500": {
+      "count": 1,
+      "avg_time_s": 8.02,
+      "avg_rmsd_ca": null
+    },
+    "500-1000": {
+      "count": 1,
+      "avg_time_s": 6.02,
+      "avg_rmsd_ca": null
+    }
+  }
+}

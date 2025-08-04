@@ -1,0 +1,86 @@
+================================================================================
+OPENFOLD++ COMPREHENSIVE BENCHMARK REPORT
+================================================================================
+Device: cpu
+CUDA Kernels Available: False
+Total Benchmarks: 19
+
+=== TRIANGLEATTENTION BENCHMARKS ===
+
+Detailed Results:
+--------------------------------------------------------------------------------
+Name                                     Impl            Time (ms)    Memory (MB) 
+--------------------------------------------------------------------------------
+TriangleAttention_PyTorch_B1_S64         PyTorch         ERROR        N/A         
+TriangleAttention_PyTorch_B1_S128        PyTorch         ERROR        N/A         
+TriangleAttention_PyTorch_B2_S64         PyTorch         ERROR        N/A         
+TriangleAttention_PyTorch_B2_S128        PyTorch         ERROR        N/A         
+
+=== TRIANGLEMULTIPLY BENCHMARKS ===
+
+Fastest: TriangleMultiply_PyTorch_B1_S64 (PyTorch)
+  Time: 35.41 ± 19.64 ms
+  Throughput: 115661.8 ops/sec
+
+Slowest: TriangleMultiply_PyTorch_B2_S128 (PyTorch)
+  Time: 190.91 ± 31.81 ms
+  Throughput: 171639.3 ops/sec
+
+Detailed Results:
+--------------------------------------------------------------------------------
+Name                                     Impl            Time (ms)    Memory (MB) 
+--------------------------------------------------------------------------------
+TriangleMultiply_PyTorch_B1_S64          PyTorch         35.41        0.0         
+TriangleMultiply_PyTorch_B1_S128         PyTorch         117.43       0.0         
+TriangleMultiply_PyTorch_B2_S64          PyTorch         63.87        0.0         
+TriangleMultiply_PyTorch_B2_S128         PyTorch         190.91       0.0         
+
+=== ATTENTION BENCHMARKS ===
+
+Fastest: Attention_MemoryOptimized_B1_S64 (MemoryOptimized)
+  Time: 2.16 ± 0.27 ms
+  Throughput: 29579.8 ops/sec
+
+Slowest: Attention_Standard_B2_S64 (Standard)
+  Time: 9.88 ± 1.76 ms
+  Throughput: 12952.9 ops/sec
+
+Detailed Results:
+--------------------------------------------------------------------------------
+Name                                     Impl            Time (ms)    Memory (MB) 
+--------------------------------------------------------------------------------
+Attention_Standard_B1_S64                Standard        2.52         0.0         
+Attention_MemoryOptimized_B1_S64         MemoryOptimized 2.16         0.0         
+Attention_Standard_B1_S128               Standard        3.17         0.0         
+Attention_MemoryOptimized_B1_S128        MemoryOptimized 6.26         0.0         
+Attention_Standard_B2_S64                Standard        9.88         0.0         
+Attention_MemoryOptimized_B2_S64         MemoryOptimized 5.53         0.0         
+Attention_Standard_B2_S128               Standard        6.32         0.0         
+Attention_MemoryOptimized_B2_S128        MemoryOptimized 5.12         0.0         
+
+=== MUTATIONPREDICTION BENCHMARKS ===
+
+Fastest: MutationPrediction_Size50 (OptimizedGNN)
+  Time: 0.16 ± 0.01 ms
+  Throughput: 6171.5 ops/sec
+
+Slowest: MutationPrediction_Size100 (OptimizedGNN)
+  Time: 0.38 ± 0.09 ms
+  Throughput: 2623.8 ops/sec
+
+Detailed Results:
+--------------------------------------------------------------------------------
+Name                                     Impl            Time (ms)    Memory (MB) 
+--------------------------------------------------------------------------------
+MutationPrediction_Size50                OptimizedGNN    0.16         0.0         
+MutationPrediction_Size100               OptimizedGNN    0.38         0.0         
+MutationPrediction_Size200               OptimizedGNN    0.21         0.0         
+
+=== SUMMARY STATISTICS ===
+
+Successful benchmarks: 15
+Failed benchmarks: 4
+Average execution time: 29.96 ms
+Total memory usage: 0.0 MB
+
+================================================================================

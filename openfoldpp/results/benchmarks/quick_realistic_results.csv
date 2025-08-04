@@ -1,0 +1,6 @@
+target_id,target_type,length,rmsd_ca,tm_score
+T1024,monomer,187,33.497,0.057
+T1030,monomer,161,33.06,0.052
+T1031,monomer,180,34.508,0.049
+T1032,monomer,699,44.885,0.074
+H1101,multimer,187,30.653,0.07
