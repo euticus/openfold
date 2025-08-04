@@ -11,16 +11,18 @@ echo "=========================================="
 RESOURCE_GROUP="${AZURE_RESOURCE_GROUP:-odinfold-rg}"
 CLUSTER_NAME="${AZURE_CLUSTER_NAME:-odinfold-cluster}"
 LOCATION="${AZURE_LOCATION:-eastus}"
-NODE_COUNT="${NODE_COUNT:-1}"
-VM_SIZE="${VM_SIZE:-Standard_NC6s_v3}"  # V100 GPU
+SYSTEM_NODE_COUNT="${SYSTEM_NODE_COUNT:-1}"
+GPU_NODE_COUNT="${GPU_NODE_COUNT:-0}"  # Start with 0 GPU nodes to save cost
+SYSTEM_VM_SIZE="${SYSTEM_VM_SIZE:-Standard_D2s_v3}"  # Cheap system nodes
+GPU_VM_SIZE="${GPU_VM_SIZE:-Standard_NC6s_v3}"  # V100 GPU nodes
 MAX_PODS="${MAX_PODS:-30}"
 
 echo "Configuration:"
 echo "  Resource Group: $RESOURCE_GROUP"
 echo "  Cluster Name: $CLUSTER_NAME"
 echo "  Location: $LOCATION"
-echo "  Node Count: $NODE_COUNT"
-echo "  VM Size: $VM_SIZE"
+echo "  System Nodes: $SYSTEM_NODE_COUNT x $SYSTEM_VM_SIZE"
+echo "  GPU Nodes: $GPU_NODE_COUNT x $GPU_VM_SIZE"
 echo ""
 
 # Check if logged in to Azure
@@ -58,23 +60,43 @@ if az aks show --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME >/dev/null 
         az aks start --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME
     fi
 else
-    echo "Creating new AKS cluster..."
+    echo "Creating new AKS cluster with system node pool..."
     az aks create \
         --resource-group $RESOURCE_GROUP \
         --name $CLUSTER_NAME \
         --location $LOCATION \
-        --node-count $NODE_COUNT \
-        --node-vm-size $VM_SIZE \
+        --node-count $SYSTEM_NODE_COUNT \
+        --node-vm-size $SYSTEM_VM_SIZE \
         --max-pods $MAX_PODS \
         --enable-addons monitoring \
         --generate-ssh-keys \
         --enable-cluster-autoscaler \
+        --min-count 1 \
+        --max-count 3 \
+        --node-osdisk-size 30 \
+        --kubernetes-version 1.27.3 \
+        --nodepool-name systempool \
+        --nodepool-labels pool=system
+
+    echo "✅ Created AKS cluster: $CLUSTER_NAME"
+
+    # Add GPU node pool
+    echo "🎯 Adding GPU node pool..."
+    az aks nodepool add \
+        --resource-group $RESOURCE_GROUP \
+        --cluster-name $CLUSTER_NAME \
+        --name gpupool \
+        --node-count $GPU_NODE_COUNT \
+        --node-vm-size $GPU_VM_SIZE \
+        --max-pods $MAX_PODS \
+        --enable-cluster-autoscaler \
         --min-count 0 \
         --max-count 3 \
         --node-osdisk-size 100 \
-        --kubernetes-version 1.27.3
-    
-    echo "✅ Created AKS cluster: $CLUSTER_NAME"
+        --node-taints nvidia.com/gpu=true:NoSchedule \
+        --labels pool=gpu,accelerator=nvidia-tesla-v100
+
+    echo "✅ Added GPU node pool"
 fi
 echo ""
 
