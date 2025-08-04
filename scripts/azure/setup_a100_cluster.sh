@@ -25,10 +25,10 @@ echo "  System Nodes: $SYSTEM_NODE_COUNT x $SYSTEM_VM_SIZE"
 echo "  A100 Nodes: $GPU_NODE_COUNT x $GPU_VM_SIZE"
 echo ""
 echo "💰 Cost Estimates (per hour):"
-echo "  System Node: ~$0.192/hr"
-echo "  A100 Node: ~$3.67/hr (80GB VRAM!)"
-echo "  Total when idle: ~$0.192/hr"
-echo "  Total with 1 A100: ~$3.86/hr"
+echo "  System Node: ~\$0.192/hr"
+echo "  A100 Node: ~\$3.67/hr (80GB VRAM!)"
+echo "  Total when idle: ~\$0.192/hr"
+echo "  Total with 1 A100: ~\$3.86/hr"
 echo ""
 
 # Check Azure login
@@ -84,7 +84,7 @@ else
         --min-count 1 \
         --max-count 5 \
         --node-osdisk-size 128 \
-        --kubernetes-version 1.27.3 \
+        --kubernetes-version 1.30.12 \
         --nodepool-name systempool \
         --nodepool-labels pool=system \
         --network-plugin azure \
