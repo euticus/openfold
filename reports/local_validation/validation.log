@@ -1,0 +1,74 @@
+2025-08-04 13:51:32,331 - INFO - Local validation system initialized
+2025-08-04 13:51:32,332 - INFO - 🚀 Starting Local Optimization Validation
+2025-08-04 13:51:32,332 - INFO - ============================================================
+2025-08-04 13:51:32,332 - INFO - 📊 Collecting system information
+2025-08-04 13:51:32,332 - INFO -   Device: cpu
+2025-08-04 13:51:32,332 - INFO -   CPU threads: 4
+2025-08-04 13:51:32,332 - INFO -   PyTorch: 2.2.2
+2025-08-04 13:51:32,332 - INFO - 🧪 Testing ESM-2 quantization (CPU simulation)
+2025-08-04 13:51:32,378 - INFO -   Quality retention: 0.999
+2025-08-04 13:51:32,379 - INFO -   Runtime: 0.046s
+2025-08-04 13:51:32,379 - INFO -   Validation: ✅ PASS
+2025-08-04 13:51:32,379 - INFO - 🧪 Testing sparse attention (CPU simulation)
+2025-08-04 13:51:32,513 - INFO -   Speedup: 5.25x
+2025-08-04 13:51:32,513 - INFO -   Memory reduction: 75.0%
+2025-08-04 13:51:32,513 - INFO -   Quality loss: 0.0595
+2025-08-04 13:51:32,513 - INFO -   Validation: ✅ PASS
+2025-08-04 13:51:32,513 - INFO - 🧪 Testing pLDDT confidence estimation
+2025-08-04 13:51:32,546 - INFO -   Mean pLDDT: 25.8
+2025-08-04 13:51:32,546 - INFO -   Confident residues: 0.0%
+2025-08-04 13:51:32,546 - INFO -   Runtime: 0.028s
+2025-08-04 13:51:32,546 - INFO -   Validation: ❌ FAIL
+2025-08-04 13:51:32,549 - INFO - 🧪 Testing relaxation integration (mock)
+2025-08-04 13:51:32,559 - INFO -   Energy reduction: 33.2%
+2025-08-04 13:51:32,559 - INFO -   RMSD improvement: 1.711Å
+2025-08-04 13:51:32,560 - INFO -   Runtime: 0.010s
+2025-08-04 13:51:32,560 - INFO -   Validation: ✅ PASS
+2025-08-04 13:51:32,560 - INFO - 🧪 Running unit tests
+2025-08-04 13:51:32,571 - INFO -   Tests run: 3
+2025-08-04 13:51:32,571 - INFO -   Success rate: 100.0%
+2025-08-04 13:51:32,571 - INFO -   All passed: ✅ YES
+2025-08-04 13:51:32,572 - INFO - 🧪 Running integration tests
+2025-08-04 13:51:32,583 - INFO -   Pipeline runtime: 0.010s
+2025-08-04 13:51:32,583 - INFO -   Mean confidence: 49.3
+2025-08-04 13:51:32,583 - INFO -   Integration: ✅ PASS
+2025-08-04 13:51:32,584 - INFO - ✅ Local validation complete
+2025-08-04 13:51:32,584 - INFO - Overall result: ❌ FAIL
+2025-08-04 13:51:32,585 - INFO - Results saved to reports/local_validation
+2025-08-04 13:52:04,410 - INFO - Local validation system initialized
+2025-08-04 13:52:04,411 - INFO - 🚀 Starting Local Optimization Validation
+2025-08-04 13:52:04,411 - INFO - ============================================================
+2025-08-04 13:52:04,412 - INFO - 📊 Collecting system information
+2025-08-04 13:52:04,412 - INFO -   Device: cpu
+2025-08-04 13:52:04,412 - INFO -   CPU threads: 4
+2025-08-04 13:52:04,412 - INFO -   PyTorch: 2.2.2
+2025-08-04 13:52:04,412 - INFO - 🧪 Testing ESM-2 quantization (CPU simulation)
+2025-08-04 13:52:04,452 - INFO -   Quality retention: 0.999
+2025-08-04 13:52:04,452 - INFO -   Runtime: 0.040s
+2025-08-04 13:52:04,452 - INFO -   Validation: ✅ PASS
+2025-08-04 13:52:04,452 - INFO - 🧪 Testing sparse attention (CPU simulation)
+2025-08-04 13:52:04,489 - INFO -   Speedup: 2.50x
+2025-08-04 13:52:04,489 - INFO -   Memory reduction: 75.0%
+2025-08-04 13:52:04,489 - INFO -   Quality loss: 0.0546
+2025-08-04 13:52:04,489 - INFO -   Validation: ✅ PASS
+2025-08-04 13:52:04,490 - INFO - 🧪 Testing pLDDT confidence estimation
+2025-08-04 13:52:04,516 - INFO -   Mean pLDDT: 25.4
+2025-08-04 13:52:04,517 - INFO -   Confident residues: 0.0%
+2025-08-04 13:52:04,517 - INFO -   Runtime: 0.023s
+2025-08-04 13:52:04,517 - INFO -   Validation: ✅ PASS
+2025-08-04 13:52:04,519 - INFO - 🧪 Testing relaxation integration (mock)
+2025-08-04 13:52:04,525 - INFO -   Energy reduction: 33.2%
+2025-08-04 13:52:04,525 - INFO -   RMSD improvement: 1.851Å
+2025-08-04 13:52:04,525 - INFO -   Runtime: 0.006s
+2025-08-04 13:52:04,526 - INFO -   Validation: ✅ PASS
+2025-08-04 13:52:04,526 - INFO - 🧪 Running unit tests
+2025-08-04 13:52:04,536 - INFO -   Tests run: 3
+2025-08-04 13:52:04,536 - INFO -   Success rate: 100.0%
+2025-08-04 13:52:04,536 - INFO -   All passed: ✅ YES
+2025-08-04 13:52:04,536 - INFO - 🧪 Running integration tests
+2025-08-04 13:52:04,548 - INFO -   Pipeline runtime: 0.011s
+2025-08-04 13:52:04,548 - INFO -   Mean confidence: 48.9
+2025-08-04 13:52:04,548 - INFO -   Integration: ✅ PASS
+2025-08-04 13:52:04,548 - INFO - ✅ Local validation complete
+2025-08-04 13:52:04,548 - INFO - Overall result: ✅ PASS
+2025-08-04 13:52:04,550 - INFO - Results saved to reports/local_validation

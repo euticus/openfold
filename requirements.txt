@@ -1,0 +1,15 @@
+torch>=2.0.0
+torchvision
+torchaudio
+transformers>=4.21.0
+accelerate
+matplotlib
+seaborn
+pandas
+numpy
+scipy
+psutil
+biopython
+requests
+tqdm
+openfold

@@ -1,0 +1,220 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: benchmark-config
+  namespace: default
+data:
+  benchmark_config.json: |
+    {
+      "mode": "full",
+      "use_gpu": true,
+      "num_test_sequences": 30,
+      "timeout_seconds": 600,
+      "target_tm_score": 0.78,
+      "target_runtime_s": 1.0,
+      "target_memory_gb": 4.0
+    }
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: foldforever-benchmark
+  namespace: default
+  labels:
+    app: foldforever-benchmark
+    component: benchmark
+spec:
+  ttlSecondsAfterFinished: 3600  # Clean up after 1 hour
+  template:
+    metadata:
+      labels:
+        app: foldforever-benchmark
+        component: benchmark
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        kubernetes.io/os: linux
+        accelerator: nvidia-tesla-a10
+      tolerations:
+      - key: "sku"
+        operator: "Equal"
+        value: "gpu"
+        effect: "NoSchedule"
+      containers:
+      - name: benchmark
+        image: python:3.11-slim
+        imagePullPolicy: Always
+        command: ["/bin/bash"]
+        args:
+          - -c
+          - |
+            set -e
+            echo "🚀 Starting FoldForever Benchmark on Azure GPU Cluster"
+            echo "=================================================="
+            
+            # Install system dependencies
+            apt-get update && apt-get install -y \
+              git \
+              wget \
+              curl \
+              build-essential \
+              nvidia-cuda-toolkit || echo "CUDA toolkit not available"
+            
+            # Install Python dependencies
+            pip install --upgrade pip
+            pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 || \
+            pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+            pip install transformers accelerate
+            pip install matplotlib seaborn pandas psutil numpy scipy
+            pip install biopython requests tqdm
+            
+            # Clone the repository
+            git clone https://github.com/euticus/openfold.git /workspace
+            cd /workspace
+            
+            # Install OpenFold dependencies if available
+            pip install -e . || echo "OpenFold installation failed, continuing with benchmark"
+            
+            # Copy benchmark script
+            cp /config/benchmark_casp14_foldforever_vs_baselines.py .
+            
+            # Run benchmark
+            echo "🧪 Starting comprehensive benchmark..."
+            python benchmark_casp14_foldforever_vs_baselines.py \
+              --mode full \
+              --gpu \
+              --sequences 30 \
+              --output /results \
+              --timeout 600 \
+              --verbose
+            
+            echo "✅ Benchmark completed successfully!"
+            echo "📊 Results saved to /results/"
+            
+            # Display summary
+            if [ -f "/results/benchmark_report.md" ]; then
+              echo "📋 Benchmark Summary:"
+              head -50 /results/benchmark_report.md
+            fi
+            
+            # Keep results accessible
+            echo "🔄 Keeping container alive for result collection..."
+            sleep 300  # Keep alive for 5 minutes to collect results
+        
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "4"
+            nvidia.com/gpu: 1
+          limits:
+            memory: "32Gi"
+            cpu: "6"
+            nvidia.com/gpu: 1
+            cpu: "16"
+        
+        env:
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0"
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: TORCH_CUDA_ARCH_LIST
+          value: "7.5;8.0;8.6"
+        
+        volumeMounts:
+        - name: benchmark-script
+          mountPath: /config
+        - name: results-volume
+          mountPath: /results
+        - name: shared-memory
+          mountPath: /dev/shm
+      
+      volumes:
+      - name: benchmark-script
+        configMap:
+          name: benchmark-script
+          defaultMode: 0755
+      - name: results-volume
+        emptyDir: {}
+      - name: shared-memory
+        emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: benchmark-script
+  namespace: default
+data:
+  benchmark_casp14_foldforever_vs_baselines.py: |
+    # This will be populated with the actual benchmark script content
+    # For now, it's a placeholder that will be updated during deployment
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: benchmark-results
+  namespace: default
+  labels:
+    app: foldforever-benchmark
+spec:
+  selector:
+    app: foldforever-benchmark
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  type: ClusterIP
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: results-collector
+  namespace: default
+  labels:
+    app: results-collector
+spec:
+  ttlSecondsAfterFinished: 7200  # Clean up after 2 hours
+  template:
+    metadata:
+      labels:
+        app: results-collector
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: collector
+        image: python:3.11-slim
+        command: ["/bin/bash"]
+        args:
+          - -c
+          - |
+            echo "📊 Results Collector Started"
+            
+            # Wait for benchmark to complete
+            sleep 60
+            
+            # Start simple HTTP server to serve results
+            cd /results
+            python -m http.server 8080 &
+            
+            echo "🌐 Results available at http://localhost:8080"
+            echo "📁 Available files:"
+            ls -la /results/
+            
+            # Keep server running
+            wait
+        
+        ports:
+        - containerPort: 8080
+        
+        volumeMounts:
+        - name: results-volume
+          mountPath: /results
+      
+      volumes:
+      - name: results-volume
+        emptyDir: {}

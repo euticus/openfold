@@ -1,0 +1,20 @@
+[
+  {
+    "model": "odinfold",
+    "sequence_id": 0,
+    "sequence_length": 18,
+    "runtime_seconds": 0.18,
+    "gpu_memory_mb": 1090,
+    "status": "success",
+    "timestamp": 1754434461.894881
+  },
+  {
+    "model": "odinfold",
+    "sequence_id": 1,
+    "sequence_length": 65,
+    "runtime_seconds": 0.65,
+    "gpu_memory_mb": 1325,
+    "status": "success",
+    "timestamp": 1754434461.894928
+  }
+]

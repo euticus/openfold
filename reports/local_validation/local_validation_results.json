@@ -1,0 +1,74 @@
+{
+  "config": "LocalValidationConfig(cpu_only=True, quick_mode=True, test_sequence_lengths=[64, 128], min_tm_score=0.6, max_runtime_s=30.0, max_memory_gb=4.0, output_dir=PosixPath('reports/local_validation'), save_detailed_logs=True)",
+  "system_info": {
+    "python_version": "3.11.4 (main, Jul  5 2023, 09:00:44) [Clang 14.0.6 ]",
+    "pytorch_version": "2.2.2",
+    "cuda_available": false,
+    "cpu_count": 4,
+    "device": "cpu"
+  },
+  "optimization_tests": {
+    "esm2_quantization": {
+      "test_name": "esm2_quantization",
+      "sequence_length": 65,
+      "embedding_dim": 2560,
+      "quantization_type": "8bit_simulation",
+      "quality_retention": 0.9991643906687386,
+      "runtime_s": 0.039563894271850586,
+      "memory_reduction_pct": 50.0,
+      "passes_validation": true
+    },
+    "sparse_attention": {
+      "test_name": "sparse_attention",
+      "sequence_length": 128,
+      "sparsity_ratio": 0.75,
+      "speedup": 2.497905858835848,
+      "memory_reduction_pct": 75.0,
+      "quality_loss": 0.054642364382743835,
+      "runtime_s": 0.036550283432006836,
+      "passes_validation": true
+    },
+    "plddt_confidence": {
+      "test_name": "plddt_confidence",
+      "sequence_length": 100,
+      "num_bins": 50,
+      "mean_plddt": 25.3905086517334,
+      "std_plddt": 1.2497832775115967,
+      "confident_residues_pct": 0.0,
+      "runtime_s": 0.022960186004638672,
+      "passes_validation": true
+    },
+    "relaxation_integration": {
+      "test_name": "relaxation_integration",
+      "sequence_length": 80,
+      "initial_energy": 24571.8203125,
+      "final_energy": 16404.341796875,
+      "energy_reduction_pct": 33.23920821393155,
+      "rmsd_improvement": 1.8509355783462524,
+      "runtime_s": 0.00589299201965332,
+      "passes_validation": true
+    }
+  },
+  "unit_tests": {
+    "tests_run": 3,
+    "failures": 0,
+    "errors": 0,
+    "success_rate": 1.0,
+    "all_passed": true
+  },
+  "integration_tests": {
+    "test_name": "complete_pipeline",
+    "sequence_length": 65,
+    "pipeline_runtime_s": 0.010796070098876953,
+    "mean_confidence": 48.87357711791992,
+    "coordinate_rmsd": 0.1003083661198616,
+    "memory_efficient": true,
+    "passes_integration": true
+  },
+  "overall_assessment": {
+    "optimizations_pass": true,
+    "unit_tests_pass": true,
+    "integration_pass": true,
+    "overall_pass": true
+  }
+}

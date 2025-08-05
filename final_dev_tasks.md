@@ -1,10 +1,10 @@
-Perfect. Then let's advance to the **next frontier of ownership** — converting OpenFold++ from an enhanced fork into a *foundationally new* architecture.
+Perfect. Then let's advance to the **next frontier of ownership** — converting OdinFold from an enhanced fork into a *foundationally new* architecture.
 
 Here’s your updated **Codex/Cursor-style task list** to push OpenFold++ into truly independent territory — assuming everything prior is already done.
 
 ---
 
-# 📦 OpenFold++ v2.0 – "Not Just a Fork"
+# 📦 OdinFold v1.2s – "Not Just a Fork"
 
 > ✅ Assumption: Prior tasks (ESM swap, fast inference CLI, benchmark scaffold, etc.) are done.
 
@@ -97,10 +97,10 @@ Here’s your updated **Codex/Cursor-style task list** to push OpenFold++ into t
 
 ### 🧪 Task T-23: Mutation Scan Engine (Web Backend)
 
-**Goal:** Replace slow Python mutation scanner with async Rust or C++ microservice
+**Goal:** Replace slow Python mutation scanner with async C++ microservice
 
 ```md
-- [ ] Rewrite mutation engine as a WebSocket or REST backend in Rust or Go
+- [ ] Rewrite mutation engine as a WebSocket or REST backend in C++
 - [ ] Parallelize single-site mutations (AA1→AA20)
 - [ ] Cache PDB+confidence deltas
 - [ ] Return diff+CSV from scan endpoint

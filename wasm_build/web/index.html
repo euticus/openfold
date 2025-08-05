@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OdinFold++ WASM Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>🧬 OdinFold++ <span class="wasm-badge">WASM</span></h1>
+                <p>Browser-based protein structure prediction</p>
+            </div>
+            <div class="status" id="status">
+                <span class="status-indicator" id="statusIndicator">⏳</span>
+                <span id="statusText">Loading...</span>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="input-section">
+                <div class="card">
+                    <h2>Protein Sequence Input</h2>
+                    <div class="input-group">
+                        <label for="sequenceInput">Enter protein sequence (max 200 residues):</label>
+                        <textarea 
+                            id="sequenceInput" 
+                            placeholder="MKWVTFISLLFLFSSAYSRGVFRRDAHKSEVAHRFKDLGEENFKALVLIAFAQYLQQCPFEDHVKLVNEVTEFAKTCVADESAENCDKSLHTLFGDKLCTVATLRETYGEMADCCAKQEPERNECFLQHKDDNPNLPRLVRPEVDVMCTAFHDNEETFLKKYLYEIARRHPYFYAPELLFFAKRYKAAFTECCQAADKAACLLPKLDELRDEGKASSAKQRLKCASLQKFGERAFKAWAVARLSQRFPKAEFAEVSKLVTDLTKVHTECCHGDLLECADDRADLAKYICENQDSISSKLKECCEKPLLEKSHCIAEVENDEMPADLPSLAADFVESKDVCKNYAEAKDVFLGMFLYEYARRHPDYSVVLLLRLAKTYETTLEKCCAAADPHECYAKVFDEFKPLVEEPQNLIKQNCELFEQLGEYKFQNALLVRYTKKVPQVSTPTLVEVSRNLGKVGSKCCKHPEAKRMPCAEDYLSVVLNQLCVLHEKTPVSDRVTKCCTESLVNRRPCFSALEVDETYVPKEFNAETFTFHADICTLSEKERQIKKQTALVELVKHKPKATKEQLKAVMDDFAAFVEKCCKADDKETCFAEEGKKLVAASQAALGL"
+                            rows="4"
+                        ></textarea>
+                        <div class="sequence-info">
+                            <span id="sequenceLength">Length: 0</span>
+                            <span id="sequenceValid" class="valid-indicator">✓ Valid</span>
+                        </div>
+                    </div>
+                    
+                    <div class="example-sequences">
+                        <h3>Example Sequences:</h3>
+                        <div class="examples">
+                            <button class="example-btn" data-sequence="MKWVTFISLLFLFSSAYS">
+                                Short peptide (18 AA)
+                            </button>
+                            <button class="example-btn" data-sequence="KVFGRCELAAAMKRHGLDNYRGYSLGNWVCAAKFESNFNTQATNRNTDGSTDYGILQINSRWWCNDGRTPGSRNLCNIPCSALLSSDITASVNCAKKIVSDGNGMNAWVAWRNRCKGTDVQAWIRGCRL">
+                                Lysozyme (129 AA)
+                            </button>
+                            <button class="example-btn" data-sequence="MKWVTFISLLFLFSSAYSRGVFRRDAHKSEVAHRFKDLGEENFKALVLIAFAQYLQQCPFEDHVKLVNEVTEFAKTCVADESAENCDKSLHTLFGDKLCTVATLRETYGEMADCCAKQEPERNECFLQHKDDNPNLPRLVRPEVDVMCTAFHDNEETFLKKYLYEIARRHPYFYAPELLFFAKRYKAAFTECCQAADKAACLLPKLDELRDEGKASSAKQRLKCASLQKFGERAFKAWAVARLSQRFPKAEFAEVSKLVTDLTKVHTECCHGDLLECADDRADLAKYICENQDSISSKLKECCEKPLLEKSHCIAEVENDEMPADLPSLAADFVESKDVCKNYAEAKDVFLGMFLYEYARRHPDYSVVLLLRLAKTYETTLEKCCAAADPHECYAKVFDEFKPLVEEPQNLIKQNCELFEQLGEYKFQNALLVRYTKKVPQVSTPTLVEVSRNLGKVGSKCCKHPEAKRMPCAEDYLSVVLNQLCVLHEKTPVSDRVTKCCTESLVNRRPCFSALEVDETYVPKEFNAETFTFHADICTLSEKERQIKKQTALVELVKHKPKATKEQLKAVMDDFAAFVEKCCKADDKETCFAEEGKKLVAASQAALGL">
+                                Albumin fragment (200 AA)
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button id="foldButton" class="fold-button" disabled>
+                        🧬 Fold Protein
+                    </button>
+                </div>
+            </div>
+
+            <div class="progress-section" id="progressSection" style="display: none;">
+                <div class="card">
+                    <h2>Folding Progress</h2>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressPercent">0%</span>
+                        <span id="progressStatus">Initializing...</span>
+                    </div>
+                    <div class="performance-info">
+                        <span id="memoryUsage">Memory: 0 MB</span>
+                        <span id="elapsedTime">Time: 0s</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="card">
+                    <h2>Folding Results</h2>
+                    
+                    <div class="result-summary">
+                        <div class="metric">
+                            <label>Sequence Length:</label>
+                            <span id="resultLength">-</span>
+                        </div>
+                        <div class="metric">
+                            <label>Mean Confidence:</label>
+                            <span id="resultConfidence">-</span>
+                        </div>
+                        <div class="metric">
+                            <label>Inference Time:</label>
+                            <span id="resultTime">-</span>
+                        </div>
+                        <div class="metric">
+                            <label>Memory Used:</label>
+                            <span id="resultMemory">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="confidence-chart">
+                        <h3>Per-Residue Confidence</h3>
+                        <canvas id="confidenceChart" width="600" height="200"></canvas>
+                    </div>
+                    
+                    <div class="structure-viewer">
+                        <h3>3D Structure</h3>
+                        <div id="structureViewer" class="viewer-placeholder">
+                            <p>3D structure visualization would appear here</p>
+                            <p>In a full implementation, this would use a library like 3Dmol.js or NGL</p>
+                        </div>
+                    </div>
+                    
+                    <div class="download-section">
+                        <h3>Download Results</h3>
+                        <button id="downloadPDB" class="download-btn">
+                            📄 Download PDB
+                        </button>
+                        <button id="downloadJSON" class="download-btn">
+                            📊 Download JSON
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="system-info">
+                <div class="info-group">
+                    <h4>System Information</h4>
+                    <div id="systemInfo">
+                        <div>Browser: <span id="browserInfo">-</span></div>
+                        <div>WebAssembly: <span id="wasmSupport">-</span></div>
+                        <div>Memory Limit: <span id="memoryLimit">-</span></div>
+                    </div>
+                </div>
+                
+                <div class="info-group">
+                    <h4>Model Information</h4>
+                    <div id="modelInfo">
+                        <div>Version: <span id="modelVersion">-</span></div>
+                        <div>Max Length: <span id="modelMaxLength">-</span></div>
+                        <div>Model Size: <span id="modelSize">-</span></div>
+                    </div>
+                </div>
+                
+                <div class="info-group">
+                    <h4>Performance</h4>
+                    <div id="performanceInfo">
+                        <div>Last Fold Time: <span id="lastFoldTime">-</span></div>
+                        <div>Peak Memory: <span id="peakMemory">-</span></div>
+                        <div>Residues/sec: <span id="throughput">-</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-text">
+                <p>
+                    <strong>OdinFold++ WASM</strong> - Browser-based protein folding for sequences up to 200 residues.
+                    For longer sequences and advanced features, use the full server version.
+                </p>
+                <p>
+                    <a href="https://github.com/odinfold/odinfold" target="_blank">GitHub</a> |
+                    <a href="https://odinfold.com/docs" target="_blank">Documentation</a> |
+                    <a href="https://odinfold.com/api" target="_blank">API</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>❌ Error</h3>
+                <button class="modal-close" id="closeError">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage">An error occurred.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="errorOk" class="button">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="odinfold-wasm.js"></script>
+    <script src="demo.js"></script>
+</body>
+</html>

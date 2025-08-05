@@ -1,0 +1,38 @@
+{
+  "models": {
+    "odinfold": {
+      "enabled": true,
+      "weights_path": "openfold/resources/openfold_params/openfold_model_1_ptm.pt",
+      "config_preset": "model_1_ptm"
+    },
+    "openfold": {
+      "enabled": true,
+      "weights_path": "openfold/resources/openfold_params/openfold_model_1_ptm.pt"
+    },
+    "esmfold": {
+      "enabled": true,
+      "model_name": "facebook/esmfold_v1"
+    }
+  },
+  "datasets": {
+    "casp14": {
+      "fasta_dir": "casp14_data/fasta",
+      "pdb_dir": "casp14_data/pdb",
+      "enabled": true
+    },
+    "test_sequences": [
+      "MKWVTFISLLFLFSSAYS",
+      "MKTVRQERLKSIVRILERSKEPVSGAQLAEELSVSRQVIVQDIAYLRSLGYNIVATPRGYVLAGG"
+    ]
+  },
+  "hardware": {
+    "device": "cuda",
+    "mixed_precision": true,
+    "max_memory_gb": 40
+  },
+  "output": {
+    "results_dir": "benchmark_results",
+    "save_structures": true,
+    "save_metrics": true
+  }
+}

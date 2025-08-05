@@ -1,0 +1,157 @@
+version: '3.8'
+
+services:
+  # CPU-only development service
+  odinfold-cpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: cpu
+    container_name: odinfold-cpu
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    environment:
+      - ODINFOLD_DEVICE=cpu
+      - ODINFOLD_LOG_LEVEL=info
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # GPU development service
+  odinfold-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: gpu
+    container_name: odinfold-gpu
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    environment:
+      - ODINFOLD_DEVICE=cuda
+      - ODINFOLD_LOG_LEVEL=info
+      - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    runtime: nvidia
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Benchmark service
+  odinfold-benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: benchmark
+    container_name: odinfold-benchmark
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    environment:
+      - ODINFOLD_DEVICE=cuda
+      - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    runtime: nvidia
+    profiles:
+      - benchmark
+
+  # Production service
+  odinfold-production:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: odinfold-production
+    ports:
+      - "8080:8000"
+    volumes:
+      - ./data:/app/data:ro
+      - ./reports:/app/reports
+    environment:
+      - ODINFOLD_DEVICE=cuda
+      - ODINFOLD_LOG_LEVEL=warning
+      - CUDA_VISIBLE_DEVICES=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    runtime: nvidia
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    profiles:
+      - production
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: odinfold-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Monitoring with Prometheus (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: odinfold-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Grafana for visualization (optional)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: odinfold-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=odinfold123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+volumes:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  default:
+    name: odinfold-network
