@@ -34,8 +34,23 @@ except ImportError:
     logging.warning("TorchMD not available. GPU MD features will be disabled.")
 
 from openfold.np import protein
-from openfold.np.relax import amber_minimize, relax
-from openfold.np.relax.relax import AmberRelaxation
+
+try:
+    from openfold.np.relax import amber_minimize, relax
+    from openfold.np.relax.relax import AmberRelaxation
+    AMBER_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"Amber relaxation not available: {e}")
+    AMBER_AVAILABLE = False
+    # Create dummy classes for graceful fallback
+    class DummyAmberMinimize:
+        def __init__(self, *args, **kwargs):
+            pass
+        def __call__(self, *args, **kwargs):
+            raise ImportError("Amber relaxation not available")
+    amber_minimize = DummyAmberMinimize()
+    relax = DummyAmberMinimize()
+    AmberRelaxation = DummyAmberMinimize
 
 
 class TorchMDRefinement:
@@ -316,6 +331,9 @@ class EnhancedAmberRefinement:
             max_outer_iterations: Maximum outer iterations
             use_gpu: Whether to use GPU acceleration
         """
+        if not AMBER_AVAILABLE:
+            raise ImportError("Amber relaxation not available. Install required dependencies.")
+
         self.relaxer = AmberRelaxation(
             max_iterations=max_iterations,
             tolerance=tolerance,

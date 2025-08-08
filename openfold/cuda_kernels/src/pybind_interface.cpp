@@ -9,6 +9,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <c10/cuda/CUDAGuard.h>
+#include <c10/cuda/CUDACachingAllocator.h>
+#include <cuda_runtime.h>
 
 #include "triangle_attention.h"
 #include "triangle_multiply.h"
@@ -126,15 +129,19 @@ py::dict get_kernel_info() {
     info["cuda_available"] = torch::cuda::is_available();
     if (torch::cuda::is_available()) {
         info["cuda_device_count"] = torch::cuda::device_count();
-        info["current_device"] = torch::cuda::current_device();
-        
-        // Get device properties
-        auto props = torch::cuda::getDeviceProperties(torch::cuda::current_device());
-        info["device_name"] = props->name;
-        info["compute_capability"] = std::to_string(props->major) + "." + std::to_string(props->minor);
-        info["total_memory_gb"] = props->totalGlobalMem / (1024.0 * 1024.0 * 1024.0);
-        info["multiprocessor_count"] = props->multiProcessorCount;
-        info["warp_size"] = props->warpSize;
+
+        // Use C10 CUDA API for device info
+        auto device = c10::cuda::current_device();
+        info["current_device"] = device;
+
+        // Get device properties using CUDA runtime API
+        cudaDeviceProp props;
+        cudaGetDeviceProperties(&props, device);
+        info["device_name"] = std::string(props.name);
+        info["compute_capability"] = std::to_string(props.major) + "." + std::to_string(props.minor);
+        info["total_memory_gb"] = props.totalGlobalMem / (1024.0 * 1024.0 * 1024.0);
+        info["multiprocessor_count"] = props.multiProcessorCount;
+        info["warp_size"] = props.warpSize;
     }
     
     info["kernels_compiled"] = true;
@@ -197,8 +204,8 @@ py::dict benchmark_kernel_performance(
     results["head_dim"] = head_dim;
     results["num_iterations"] = num_iterations;
     
-    // Memory usage
-    results["peak_memory_mb"] = torch::cuda::max_memory_allocated() / (1024.0 * 1024.0);
+    // Memory usage using C10 CUDA API
+    results["peak_memory_mb"] = c10::cuda::CUDACachingAllocator::getDeviceStats(c10::cuda::current_device()).allocated_bytes[0].current / (1024.0 * 1024.0);
     
     return results;
 }

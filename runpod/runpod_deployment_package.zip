@@ -1,0 +1,11 @@
+# This will be a deployment package for RunPod
+# Creating the files you'll need to upload
+
+FILES_TO_UPLOAD = [
+    "benchmark_casp14_foldforever_vs_baselines.py",
+    "requirements.txt", 
+    "runpod_startup.sh"
+]
+
+# The benchmark script is already created
+# Let me create the requirements and startup files
