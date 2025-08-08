@@ -42,22 +42,26 @@ class MemoryLayoutOptimizer:
         """Get GPU device properties for optimization."""
         if not torch.cuda.is_available():
             return {}
-        
-        device = torch.cuda.current_device()
-        props = torch.cuda.get_device_properties(device)
-        
-        return {
-            'name': props.name,
-            'major': props.major,
-            'minor': props.minor,
-            'total_memory': props.total_memory,
-            'multiprocessor_count': props.multiprocessor_count,
-            'max_threads_per_multiprocessor': props.max_threads_per_multiprocessor,
-            'max_threads_per_block': props.max_threads_per_block,
-            'warp_size': props.warp_size,
-            'memory_clock_rate': getattr(props, 'memory_clock_rate', 0),
-            'memory_bus_width': getattr(props, 'memory_bus_width', 0)
-        }
+
+        try:
+            device = torch.cuda.current_device()
+            props = torch.cuda.get_device_properties(device)
+
+            return {
+                'name': props.name,
+                'major': props.major,
+                'minor': props.minor,
+                'total_memory': props.total_memory,
+                'multiprocessor_count': getattr(props, 'multiprocessor_count', getattr(props, 'multi_processor_count', 0)),
+                'max_threads_per_multiprocessor': getattr(props, 'max_threads_per_multiprocessor', 0),
+                'max_threads_per_block': getattr(props, 'max_threads_per_block', 0),
+                'warp_size': getattr(props, 'warp_size', 32),
+                'memory_clock_rate': getattr(props, 'memory_clock_rate', 0),
+                'memory_bus_width': getattr(props, 'memory_bus_width', 0)
+            }
+        except Exception as e:
+            # Fallback to empty dict if GPU properties can't be accessed
+            return {}
     
     def optimize_tensor_layout(self, tensor: torch.Tensor, 
                               operation_type: str = "attention") -> torch.Tensor:

@@ -10,3 +10,40 @@ data
 openfold/resources/
 tests/test_data/
 cutlass/
+
+# Large model and artifact files
+*.pt
+*.ckpt
+*.bin
+*.safetensors
+*.npz
+*.npy
+*.onnx
+
+# OpenFold weight locations
+resources/openfold_params/
+openfold/resources/openfold_params/
+
+# Benchmark outputs and predictions
+results/
+results_full/
+azure_ready_results/
+openfoldpp/reports/
+benchmark.log
+
+# ML tooling and experiment artifacts
+wandb/
+artifacts/
+.cache/
+
+
+# Virtual envs and local configs
+.venv/
+.env
+*.env
+
+# Archives
+*.zip
+*.tar.gz
+*.tar
+*.tgz

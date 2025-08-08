@@ -30,6 +30,7 @@ from openfold.data import (
     msa_identifiers,
     msa_pairing,
     feature_processing_multimer,
+    ligand_parser,
 )
 from openfold.data.templates import (
     get_custom_template_features,
@@ -708,8 +709,10 @@ class DataPipeline:
     def __init__(
         self,
         template_featurizer: Optional[templates.TemplateHitFeaturizer],
+        ligand_embedder: Optional[ligand_parser.LigandEmbedder] = None,
     ):
         self.template_featurizer = template_featurizer
+        self.ligand_embedder = ligand_embedder
 
     def _parse_msa_data(
         self,
@@ -861,12 +864,83 @@ class DataPipeline:
 
         return seqemb_features
 
+    def _process_ligand_features(
+        self,
+        ligand_input: Optional[Union[str, dict]] = None,
+    ) -> FeatureDict:
+        """Process ligand input into features."""
+        ligand_features = {}
+
+        if ligand_input is None:
+            # No ligand provided - create empty features
+            ligand_features.update({
+                "has_ligand": np.array(0, dtype=np.int32),
+                "ligand_embedding": np.zeros((256,), dtype=np.float32),
+                "ligand_atom_positions": np.zeros((1, 3), dtype=np.float32),
+                "ligand_atom_mask": np.zeros((1,), dtype=np.bool_),
+                "ligand_smiles": "",
+            })
+        else:
+            try:
+                # Parse ligand input
+                parsed_ligand = ligand_parser.parse_ligand_input(ligand_input)
+
+                if parsed_ligand is None:
+                    # Failed to parse - use empty features
+                    ligand_features.update({
+                        "has_ligand": np.array(0, dtype=np.int32),
+                        "ligand_embedding": np.zeros((256,), dtype=np.float32),
+                        "ligand_atom_positions": np.zeros((1, 3), dtype=np.float32),
+                        "ligand_atom_mask": np.zeros((1,), dtype=np.bool_),
+                        "ligand_smiles": "",
+                    })
+                else:
+                    # Generate ligand embedding if embedder is available
+                    if self.ligand_embedder is not None:
+                        ligand_embedding = self.ligand_embedder(parsed_ligand).detach().numpy()
+                    else:
+                        # Use simple features as embedding
+                        ligand_embedding = parsed_ligand.global_features.numpy()
+                        # Pad or truncate to 256 dimensions
+                        if len(ligand_embedding) < 256:
+                            ligand_embedding = np.pad(ligand_embedding, (0, 256 - len(ligand_embedding)))
+                        else:
+                            ligand_embedding = ligand_embedding[:256]
+
+                    # Extract positions and create mask
+                    positions = parsed_ligand.positions.numpy()
+                    atom_mask = np.ones(positions.shape[0], dtype=np.bool_)
+
+                    ligand_features.update({
+                        "has_ligand": np.array(1, dtype=np.int32),
+                        "ligand_embedding": ligand_embedding.astype(np.float32),
+                        "ligand_atom_positions": positions.astype(np.float32),
+                        "ligand_atom_mask": atom_mask,
+                        "ligand_smiles": parsed_ligand.smiles or "",
+                        "ligand_num_atoms": np.array(parsed_ligand.num_atoms, dtype=np.int32),
+                        "ligand_mol_weight": np.array(parsed_ligand.mol_weight or 0.0, dtype=np.float32),
+                    })
+
+            except Exception as e:
+                print(f"Warning: Failed to process ligand input: {e}")
+                # Fall back to empty features
+                ligand_features.update({
+                    "has_ligand": np.array(0, dtype=np.int32),
+                    "ligand_embedding": np.zeros((256,), dtype=np.float32),
+                    "ligand_atom_positions": np.zeros((1, 3), dtype=np.float32),
+                    "ligand_atom_mask": np.zeros((1,), dtype=np.bool_),
+                    "ligand_smiles": "",
+                })
+
+        return ligand_features
+
     def process_fasta(
         self,
         fasta_path: str,
         alignment_dir: str,
         alignment_index: Optional[Any] = None,
         seqemb_mode: bool = False,
+        ligand_input: Optional[Union[str, dict]] = None,
     ) -> FeatureDict:
         """Assembles features for a single sequence in a FASTA file"""
         with open(fasta_path) as f:
@@ -905,12 +979,16 @@ class DataPipeline:
             sequence_embedding_features = self._process_seqemb_features(alignment_dir)
         else:
             msa_features = self._process_msa_feats(alignment_dir, input_sequence, alignment_index)
-        
+
+        # Process ligand features
+        ligand_features = self._process_ligand_features(ligand_input)
+
         return {
             **sequence_features,
-            **msa_features, 
+            **msa_features,
             **template_features,
-            **sequence_embedding_features
+            **sequence_embedding_features,
+            **ligand_features
         }
 
     def process_mmcif(

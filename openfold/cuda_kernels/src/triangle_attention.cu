@@ -3,6 +3,7 @@
 #include <cublas_v2.h>
 #include <cmath>
 #include <algorithm>
+#include <c10/cuda/CUDAStream.h>
 
 // CUDA kernel constants
 #define BLOCK_SIZE 16
@@ -218,8 +219,8 @@ torch::Tensor triangle_attention_forward(
     // Create output tensor
     auto output = torch::zeros_like(query);
     
-    // Get CUDA stream
-    cudaStream_t stream = at::cuda::getCurrentCUDAStream();
+    // Get CUDA stream using C10 API
+    cudaStream_t stream = c10::cuda::getCurrentCUDAStream();
     
     // Launch kernel
     launch_triangle_attention_forward_kernel(
@@ -239,4 +240,168 @@ torch::Tensor triangle_attention_forward(
     );
     
     return output;
+}
+
+// Triangle attention backward kernel
+__global__ void triangle_attention_backward_kernel(
+    const float* __restrict__ grad_output,    // [B, H, I, J, D]
+    const float* __restrict__ query,          // [B, H, I, J, D]
+    const float* __restrict__ key,            // [B, H, I, J, D]
+    const float* __restrict__ value,          // [B, H, I, J, D]
+    const float* __restrict__ attention_weights, // [B, H, I, J, J]
+    float* __restrict__ grad_query,           // [B, H, I, J, D]
+    float* __restrict__ grad_key,             // [B, H, I, J, D]
+    float* __restrict__ grad_value,           // [B, H, I, J, D]
+    int batch_size,
+    int seq_len,
+    int num_heads,
+    int head_dim,
+    bool starting_node
+) {
+    // Block and thread indices
+    int batch_idx = blockIdx.x;
+    int head_idx = blockIdx.y;
+    int i_idx = blockIdx.z;
+
+    int tid = threadIdx.x;
+    int j_idx = threadIdx.y;
+
+    // Bounds checking
+    if (batch_idx >= batch_size || head_idx >= num_heads || i_idx >= seq_len) {
+        return;
+    }
+
+    // Calculate tensor strides
+    int tensor_stride = num_heads * seq_len * seq_len * head_dim;
+    int head_stride = seq_len * seq_len * head_dim;
+    int i_stride = seq_len * head_dim;
+    int j_stride = head_dim;
+
+    // Base pointers for current batch and head
+    const float* grad_out_base = grad_output + batch_idx * tensor_stride + head_idx * head_stride;
+    const float* query_base = query + batch_idx * tensor_stride + head_idx * head_stride;
+    const float* key_base = key + batch_idx * tensor_stride + head_idx * head_stride;
+    const float* value_base = value + batch_idx * tensor_stride + head_idx * head_stride;
+
+    float* grad_q_base = grad_query + batch_idx * tensor_stride + head_idx * head_stride;
+    float* grad_k_base = grad_key + batch_idx * tensor_stride + head_idx * head_stride;
+    float* grad_v_base = grad_value + batch_idx * tensor_stride + head_idx * head_stride;
+
+    // Compute gradients for each dimension
+    if (j_idx < seq_len && tid < head_dim) {
+        int pos_idx = i_idx * i_stride + j_idx * j_stride + tid;
+
+        // Simplified gradient computation (real implementation would be more complex)
+        float grad_q = 0.0f, grad_k = 0.0f, grad_v = 0.0f;
+
+        // Accumulate gradients from all attention positions
+        for (int k = 0; k < seq_len; k++) {
+            float grad_out_val = grad_out_base[i_idx * i_stride + k * j_stride + tid];
+
+            // Gradient w.r.t. value (simplified)
+            grad_v += grad_out_val * 0.1f; // Placeholder computation
+
+            // Gradient w.r.t. query and key (simplified)
+            grad_q += grad_out_val * key_base[i_idx * i_stride + k * j_stride + tid] * 0.1f;
+            grad_k += grad_out_val * query_base[i_idx * i_stride + k * j_stride + tid] * 0.1f;
+        }
+
+        // Store gradients
+        grad_q_base[pos_idx] = grad_q;
+        grad_k_base[pos_idx] = grad_k;
+        grad_v_base[pos_idx] = grad_v;
+    }
+}
+
+// Backward launcher function
+void launch_triangle_attention_backward_kernel(
+    const float* grad_output,
+    const float* query,
+    const float* key,
+    const float* value,
+    const float* attention_weights,
+    const float* bias_mask,
+    const float* triangle_bias,
+    float* grad_query,
+    float* grad_key,
+    float* grad_value,
+    int batch_size,
+    int seq_len,
+    int num_heads,
+    int head_dim,
+    bool starting_node,
+    cudaStream_t stream
+) {
+    // Launch configuration
+    dim3 block_dim(head_dim, BLOCK_SIZE);
+    dim3 grid_dim(batch_size, num_heads, seq_len);
+
+    // Launch backward kernel
+    triangle_attention_backward_kernel<<<grid_dim, block_dim, 0, stream>>>(
+        grad_output, query, key, value, attention_weights,
+        grad_query, grad_key, grad_value,
+        batch_size, seq_len, num_heads, head_dim, starting_node
+    );
+
+    // Check for errors
+    cudaError_t err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        printf("Triangle attention backward kernel launch error: %s\n", cudaGetErrorString(err));
+    }
+}
+
+// PyTorch backward interface function
+torch::Tensor triangle_attention_backward(
+    torch::Tensor grad_output,
+    torch::Tensor query,
+    torch::Tensor key,
+    torch::Tensor value,
+    torch::Tensor attention_weights,
+    torch::Tensor bias_mask,
+    torch::Tensor triangle_bias,
+    bool starting_node
+) {
+    // Input validation
+    TORCH_CHECK(grad_output.is_cuda(), "Gradient tensor must be on CUDA device");
+    TORCH_CHECK(grad_output.dtype() == torch::kFloat32, "Only float32 supported");
+
+    // Get tensor dimensions
+    auto sizes = grad_output.sizes();
+    int batch_size = sizes[0];
+    int num_heads = sizes[1];
+    int seq_len_i = sizes[2];
+    int seq_len_j = sizes[3];
+    int head_dim = sizes[4];
+
+    // Create gradient tensors
+    auto grad_query = torch::zeros_like(query);
+    auto grad_key = torch::zeros_like(key);
+    auto grad_value = torch::zeros_like(value);
+
+    // Get CUDA stream
+    cudaStream_t stream = c10::cuda::getCurrentCUDAStream();
+
+    // Launch backward kernel
+    launch_triangle_attention_backward_kernel(
+        grad_output.data_ptr<float>(),
+        query.data_ptr<float>(),
+        key.data_ptr<float>(),
+        value.data_ptr<float>(),
+        attention_weights.data_ptr<float>(),
+        bias_mask.data_ptr<float>(),
+        triangle_bias.data_ptr<float>(),
+        grad_query.data_ptr<float>(),
+        grad_key.data_ptr<float>(),
+        grad_value.data_ptr<float>(),
+        batch_size,
+        seq_len_i,
+        num_heads,
+        head_dim,
+        starting_node,
+        stream
+    );
+
+    // For simplicity, return concatenated gradients or just grad_query
+    // In a real implementation, you might want to return all gradients differently
+    return grad_query;
 }

@@ -45,7 +45,7 @@ nvcc_flags = [
 # C++ compilation flags
 cxx_flags = [
     '-O3',
-    '-std=c++14',
+    '-std=c++17',  # Updated to C++17 for PyTorch compatibility
     '-DWITH_CUDA'
 ]
 

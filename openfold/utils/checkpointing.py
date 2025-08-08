@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import importlib
+import importlib.util
 from typing import Any, Tuple, List, Callable, Optional
 
 deepspeed_is_installed = importlib.util.find_spec("deepspeed") is not None

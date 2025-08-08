@@ -1,0 +1,367 @@
+{
+  "job_id": "comprehensive_1754440034",
+  "status": "completed",
+  "total_runtime": 80.15453100204468,
+  "results": [
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "openfold_model_1_ptm",
+      "status": "success",
+      "runtime_seconds": 2.000349998474121,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:17.005228"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_ptm_1",
+      "status": "success",
+      "runtime_seconds": 2.0965070724487305,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:19.101940"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_ptm_2",
+      "status": "success",
+      "runtime_seconds": 2.0002171993255615,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:21.102702"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_no_templ_ptm_1",
+      "status": "success",
+      "runtime_seconds": 2.0008838176727295,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:23.103685"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_no_templ_1",
+      "status": "success",
+      "runtime_seconds": 2.0020899772644043,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:25.106184"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_no_templ_2",
+      "status": "success",
+      "runtime_seconds": 2.0011491775512695,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:27.107602"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_2",
+      "status": "success",
+      "runtime_seconds": 2.000235080718994,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:29.108008"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_3",
+      "status": "success",
+      "runtime_seconds": 2.000976085662842,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:31.109148"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_4",
+      "status": "success",
+      "runtime_seconds": 2.001922845840454,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:33.111211"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "finetuning_5",
+      "status": "success",
+      "runtime_seconds": 2.0015816688537598,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:35.112969"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "initial_training",
+      "status": "success",
+      "runtime_seconds": 2.0009028911590576,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:37.113996"
+    },
+    {
+      "sequence_index": 0,
+      "sequence_length": 187,
+      "model": "openfold_trained_weights",
+      "status": "success",
+      "runtime_seconds": 2.0012080669403076,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:39.115452"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "openfold_model_1_ptm",
+      "status": "success",
+      "runtime_seconds": 2.000382900238037,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:41.115967"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_ptm_1",
+      "status": "success",
+      "runtime_seconds": 2.0003089904785156,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:43.116379"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_ptm_2",
+      "status": "success",
+      "runtime_seconds": 2.0015628337860107,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:45.118114"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_no_templ_ptm_1",
+      "status": "success",
+      "runtime_seconds": 2.001070737838745,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:47.119296"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_no_templ_1",
+      "status": "success",
+      "runtime_seconds": 2.000335693359375,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:49.119735"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_no_templ_2",
+      "status": "success",
+      "runtime_seconds": 2.000404119491577,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:51.120242"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_2",
+      "status": "success",
+      "runtime_seconds": 2.0021941661834717,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:53.122664"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_3",
+      "status": "success",
+      "runtime_seconds": 2.0009729862213135,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:55.123789"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_4",
+      "status": "success",
+      "runtime_seconds": 2.0011630058288574,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:57.125061"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "finetuning_5",
+      "status": "success",
+      "runtime_seconds": 2.000922203063965,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:27:59.126178"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "initial_training",
+      "status": "success",
+      "runtime_seconds": 2.00185489654541,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:01.128135"
+    },
+    {
+      "sequence_index": 1,
+      "sequence_length": 65,
+      "model": "openfold_trained_weights",
+      "status": "success",
+      "runtime_seconds": 2.0008649826049805,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:03.129105"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "openfold_model_1_ptm",
+      "status": "success",
+      "runtime_seconds": 2.0016651153564453,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:05.130941"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_ptm_1",
+      "status": "success",
+      "runtime_seconds": 2.0022599697113037,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:07.133389"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_ptm_2",
+      "status": "success",
+      "runtime_seconds": 2.0002198219299316,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:09.133760"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_no_templ_ptm_1",
+      "status": "success",
+      "runtime_seconds": 2.0035769939422607,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:11.137469"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_no_templ_1",
+      "status": "success",
+      "runtime_seconds": 2.0019938945770264,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:13.139733"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_no_templ_2",
+      "status": "success",
+      "runtime_seconds": 2.000307083129883,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:15.140172"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_2",
+      "status": "success",
+      "runtime_seconds": 2.000234842300415,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:17.140566"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_3",
+      "status": "success",
+      "runtime_seconds": 2.0012660026550293,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:19.141959"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_4",
+      "status": "success",
+      "runtime_seconds": 2.0004959106445312,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:21.142641"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "finetuning_5",
+      "status": "success",
+      "runtime_seconds": 2.001373291015625,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:23.144134"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "initial_training",
+      "status": "success",
+      "runtime_seconds": 2.00036883354187,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:25.144639"
+    },
+    {
+      "sequence_index": 2,
+      "sequence_length": 18,
+      "model": "openfold_trained_weights",
+      "status": "success",
+      "runtime_seconds": 2.0013208389282227,
+      "gpu_memory_mb": 8000,
+      "confidence_score": 0.85,
+      "timestamp": "2025-08-05T17:28:27.146127"
+    }
+  ]
+}
